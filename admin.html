@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Painting with passion</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Base Stylesheet (Variables & Reset) -->
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="admin.css">
+    <script src="theme.js" defer></script>
+</head>
+<body>
+
+    <!-- 1 & 2. Sidebar Layout and Navigation -->
+    <aside class="sidebar">
+        <a href="index.html" class="sidebar-logo">Painting with passion</a>
+        
+        <nav class="nav-menu">
+            <a class="nav-item" data-target="tab-dashboard">Dashboard Overview</a>
+            <a class="nav-item active" data-target="tab-upload">Upload Artwork</a>
+            <a class="nav-item" data-target="tab-thoughts">Write a Thought</a>
+            <a class="nav-item" data-target="tab-highlights">Manage Highlights</a>
+        </nav>
+
+        <a class="logout-btn" href="login.html">Logout</a>
+    </aside>
+
+    <!-- 3. Main Workspace -->
+    <main class="main-workspace">
+        
+        <!-- Dashboard Placeholder Tab -->
+        <div class="tab-pane" id="tab-dashboard">
+            <h1 class="section-header">Dashboard Overview</h1>
+            <p style="color: var(--text-gray);">Traffic analytics and sales summary metrics will be integrated here.</p>
+        </div>
+
+        <!-- Upload Artwork Tab (Default Active) -->
+        <div class="tab-pane active" id="tab-upload">
+            <h1 class="section-header">Upload New Artwork</h1>
+            
+            <form class="upload-form" id="form-upload">
+                
+                <!-- Drag & Drop Zone -->
+                <div class="drop-zone" id="drop-zone">
+                    <p class="drop-zone-text">Drag & Drop High-Res Artwork Here</p>
+                    <p class="drop-zone-sub">or click to browse files (JPEG, PNG up to 15MB)</p>
+                    <input type="file" id="file-input" hidden accept="image/*">
+                </div>
+
+                <!-- Form Inputs -->
+                <div class="form-grid">
+                    <div class="input-group">
+                        <input type="text" class="admin-input" placeholder="Artwork Title" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="admin-input" placeholder="Price / Value (e.g. $1,200 USD)">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="admin-input" placeholder="Dimensions (e.g. 24&quot; x 36&quot;)">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="admin-input" placeholder="Medium (e.g. Oil on Canvas)">
+                    </div>
+                    <div class="input-group full-width">
+                        <textarea class="admin-textarea" placeholder="The Inspiration / Story"></textarea>
+                    </div>
+                </div>
+
+                <!-- Availability Toggle -->
+                <div class="toggle-group">
+                    <span class="toggle-label" id="availability-label">Status: Available for Acquisition</span>
+                    <label class="switch">
+                        <input type="checkbox" id="status-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-publish">Publish Artwork</button>
+            </form>
+        </div>
+
+        <!-- Thoughts Placeholder Tab -->
+        <div class="tab-pane" id="tab-thoughts">
+            <h1 class="section-header">Write a Thought</h1>
+            <p style="color: var(--text-gray);">The markdown editor for publishing personal blog entries will be placed here.</p>
+        </div>
+
+        <!-- Highlights Placeholder Tab -->
+        <div class="tab-pane" id="tab-highlights">
+            <h1 class="section-header">Manage Highlights</h1>
+            <p style="color: var(--text-gray);">The vertical story media upload and management interface will be placed here.</p>
+        </div>
+
+        <!-- 5. Footer -->
+        <footer class="admin-footer">
+            System developed by Ovi
+        </footer>
+    </main>
+
+    <!-- 4. Interactive JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Tab Navigation Logic
+            const navItems = document.querySelectorAll('.nav-item');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Remove active states from all
+                    navItems.forEach(n => n.classList.remove('active'));
+                    tabPanes.forEach(t => t.classList.remove('active'));
+
+                    // Add active state to clicked item and corresponding tab
+                    item.classList.add('active');
+                    const targetId = item.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // Drag and Drop Zone Logic
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+
+            // Trigger file input on click
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            // Handle visual states during drag
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            // Handle file drop
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    updateDropZoneText(fileInput.files[0].name);
+                }
+            });
+
+            // Handle file selection via click browser
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length) {
+                    updateDropZoneText(fileInput.files[0].name);
+                }
+            });
+
+            // Update UI with selected filename
+            function updateDropZoneText(filename) {
+                dropZone.innerHTML = `
+                    <p class="drop-zone-text" style="color: var(--accent-color); font-size: 1.2rem;">${filename}</p>
+                    <p class="drop-zone-sub">File staged for upload</p>
+                `;
+            }
+
+            // Status Toggle Label Logic
+            const statusToggle = document.getElementById('status-toggle');
+            const availabilityLabel = document.getElementById('availability-label');
+
+            statusToggle.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    availabilityLabel.textContent = "Status: Available for Acquisition";
+                } else {
+                    availabilityLabel.textContent = "Status: Private Collection / Sold";
+                }
+            });
+
+            // Prevent default submission to simulate upload
+            const formUpload = document.getElementById('form-upload');
+            formUpload.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert("Preparing to upload artwork metadata and image to Supabase database...");
+                // formUpload.reset(); 
+                // updateDropZoneText("Drag & Drop High-Res Artwork Here");
+            });
+        });
+    </script>
+</body>
+</html>

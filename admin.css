@@ -1,0 +1,351 @@
+        /* ==================================================
+           ADMIN DASHBOARD SPECIFIC STYLES
+           ================================================== */
+                :root {
+                    --admin-sidebar-bg: #1a1a1a;
+                    --admin-sidebar-text: #fcfcfc;
+                    --admin-sidebar-muted: rgba(255, 255, 255, 0.65);
+                    --admin-sidebar-hover: rgba(255, 255, 255, 0.15);
+                    --admin-sidebar-border: rgba(255, 255, 255, 0.15);
+                    --admin-surface: #f9f9f9;
+                    --admin-surface-hover: #f0f0f0;
+                    --admin-placeholder: #b0b0b0;
+                    --admin-footer: #b0b0b0;
+                }
+
+                html[data-theme="dark"] {
+                    --admin-sidebar-bg: #0f141b;
+                    --admin-sidebar-text: #eef2f7;
+                    --admin-sidebar-muted: #a9b3c1;
+                    --admin-sidebar-hover: rgba(255, 255, 255, 0.08);
+                    --admin-sidebar-border: rgba(255, 255, 255, 0.12);
+                    --admin-surface: #131a24;
+                    --admin-surface-hover: #182131;
+                    --admin-placeholder: #8f98a7;
+                    --admin-footer: #8f98a7;
+                }
+
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden; /* Main scroll handles inner content */
+            background-color: var(--bg-off-white);
+        }
+
+        /* 1 & 2. Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background-color: var(--admin-sidebar-bg);
+            color: var(--admin-sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 2.5rem 2rem;
+            flex-shrink: 0;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+            z-index: 50;
+        }
+
+        .sidebar-logo {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            margin-bottom: 3.5rem;
+            color: var(--admin-sidebar-text);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            color: var(--admin-sidebar-muted);
+            text-decoration: none;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            padding: 0.9rem 1.2rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--admin-sidebar-text);
+            background-color: var(--admin-sidebar-hover);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: var(--admin-sidebar-muted);
+            text-decoration: none;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            padding: 1.2rem 1.2rem 0;
+            border-top: 1px solid var(--admin-sidebar-border);
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            color: var(--admin-sidebar-text);
+        }
+
+        /* 3. Main Workspace */
+        .main-workspace {
+            flex-grow: 1;
+            padding: 4rem 5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 1rem;
+        }
+
+        /* Tab Content Control */
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.4s ease;
+            flex-grow: 1;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Upload Form Wrapper */
+        .upload-form {
+            max-width: 850px;
+        }
+
+        /* Beautiful Drag & Drop Zone */
+        .drop-zone {
+            border: 2px dashed var(--border-light);
+            border-radius: 12px;
+            padding: 5rem 2rem;
+            text-align: center;
+            background-color: var(--admin-surface);
+            margin-bottom: 3rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--text-muted);
+            background-color: var(--admin-surface-hover);
+        }
+
+        .drop-zone-text {
+            font-family: var(--font-serif);
+            color: var(--accent-color);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .drop-zone-sub {
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        /* Elegant Form Inputs */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .admin-input, .admin-textarea {
+            width: 100%;
+            padding: 0.8rem 0;
+            border: none;
+            border-bottom: 1px solid var(--border-light);
+            background: transparent;
+            font-family: var(--font-sans);
+            font-size: 1.05rem;
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .admin-textarea {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.6;
+        }
+
+        .admin-input:focus, .admin-textarea:focus {
+            border-bottom-color: var(--accent-color);
+        }
+
+        .admin-input::placeholder, .admin-textarea::placeholder {
+            color: var(--admin-placeholder);
+            font-weight: 300;
+        }
+
+        /* Custom Toggle Switch for Availability */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 3rem;
+        }
+
+        .toggle-label {
+            font-family: var(--font-sans);
+            font-size: 1.05rem;
+            color: var(--text-dark);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 56px;
+            height: 28px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--border-light);
+            transition: .4s ease;
+            border-radius: 30px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s ease;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(28px);
+        }
+
+        /* Submit Button */
+        .btn-publish {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background-color: var(--accent-color);
+            color: var(--bg-off-white);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.95rem;
+            border: 1px solid var(--accent-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-family: var(--font-sans);
+        }
+
+        .btn-publish:hover {
+            background-color: transparent;
+            color: var(--accent-color);
+        }
+
+        /* 5. Minimalist Footer */
+        .admin-footer {
+            margin-top: 5rem;
+            font-size: 0.8rem;
+            color: var(--admin-footer);
+            text-align: left;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.5rem;
+            font-family: var(--font-sans);
+        }
+
+        /* Responsive Layout Updates */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+                overflow: auto;
+            }
+            .sidebar {
+                width: 100%;
+                padding: 1.5rem;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            .sidebar-logo {
+                margin-bottom: 0;
+                width: 100%;
+                text-align: center;
+            }
+            .nav-menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .logout-btn {
+                width: 100%;
+                text-align: center;
+                border-top: none;
+                padding-top: 0;
+            }
+            .main-workspace {
+                padding: 2.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .toggle-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }

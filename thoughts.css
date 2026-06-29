@@ -1,0 +1,260 @@
+/* CSS Variables for Minimalist Palette */
+:root {
+    --bg-off-white: #fcfcfc;
+    --text-dark: #2c2c2c;
+    --text-gray: #666666;
+    --border-light: #e5e5e5;
+    --accent-color: #1a1a1a;
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Lato', sans-serif;
+}
+
+/* Base Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-off-white);
+    color: var(--text-dark);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+/* Navigation Bar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    border-bottom: 1px solid var(--border-light);
+    background-color: var(--bg-off-white);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--accent-color);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-gray);
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--accent-color);
+}
+
+.nav-links a.active {
+    color: var(--accent-color);
+    font-weight: bold;
+    border-bottom: 1px solid var(--accent-color);
+    padding-bottom: 2px;
+}
+
+.menu-toggle {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Editorial Header */
+.editorial-header {
+    text-align: center;
+    padding: 6rem 5% 4rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.header-title {
+    font-family: var(--font-serif);
+    font-size: 3.5rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.header-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-gray);
+    line-height: 1.8;
+}
+
+/* Blog Feed Layout */
+.blog-feed {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 5% 5rem;
+}
+
+/* Blog Post Cards */
+.blog-card {
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--border-light);
+    transition: transform 0.3s ease;
+}
+
+.category-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-gray);
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-light);
+    padding: 0.3rem 0.8rem;
+    border-radius: 2px;
+}
+
+.post-title {
+    font-family: var(--font-serif);
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.post-title a {
+    transition: color 0.3s ease;
+}
+
+.post-title a:hover {
+    color: var(--accent-color);
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+.post-snippet {
+    font-size: 1.1rem;
+    color: var(--text-gray);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+.read-more {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--accent-color);
+    padding-bottom: 2px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.read-more:hover {
+    opacity: 0.6;
+}
+
+/* Pagination */
+.pagination {
+    text-align: center;
+    padding-top: 4rem;
+}
+
+.btn-older-posts {
+    background: transparent;
+    border: none;
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--text-gray);
+    border-bottom: 1px solid var(--text-gray);
+    padding-bottom: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-older-posts:hover {
+    color: var(--accent-color);
+    border-bottom-color: var(--accent-color);
+}
+
+/* Footer */
+footer {
+    padding: 3rem 5%;
+    text-align: center;
+    background-color: var(--bg-off-white);
+    border-top: 1px solid var(--border-light);
+}
+
+.footer-text {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    margin-bottom: 0.5rem;
+}
+
+.developer-credit {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    letter-spacing: 0.5px;
+}
+
+/* Responsive Mobile Adjustments */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--bg-off-white);
+        padding: 1rem 0;
+        text-align: center;
+        border-bottom: 1px solid var(--border-light);
+    }
+    
+    .nav-links.active {
+        display: flex;
+    }
+    
+    .menu-toggle {
+        display: block;
+    }
+
+    .header-title {
+        font-size: 2.5rem;
+    }
+
+    .editorial-header {
+        padding: 4rem 5% 2rem;
+    }
+
+    .blog-card {
+        padding: 3rem 0;
+    }
+
+    .post-title {
+        font-size: 1.8rem;
+    }
+}

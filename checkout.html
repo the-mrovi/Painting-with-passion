@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Painting with passion</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Base Stylesheet (Nav, Footer, Reset) -->
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="checkout.css">
+    <script src="theme.js" defer></script>
+</head>
+<body>
+
+    <!-- 1. Navigation Bar -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">Painting with passion</a>
+        <div class="menu-toggle" id="mobile-menu-btn">☰</div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="thoughts.html">Thoughts</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="checkout.html" class="active">Inquiry Cart (1)</a></li>
+        </ul>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="checkout-header">
+        <h1 class="checkout-title">Secure Checkout</h1>
+        <p class="checkout-subtitle">Complete your details to finalize your acquisition.</p>
+    </header>
+
+    <!-- 2. Two-Column Layout -->
+    <main class="checkout-container">
+        
+        <!-- 3. Left Column (Buyer Details & Payment) -->
+        <div class="checkout-left">
+            <form id="checkout-form">
+                
+                <!-- Contact Information -->
+                <section class="checkout-section">
+                    <h2 class="checkout-section-title">Contact Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" class="form-input" required>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Delivery Details -->
+                <section class="checkout-section">
+                    <h2 class="checkout-section-title">Delivery Details</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="address">Shipping Address</label>
+                            <input type="text" id="address" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="postal">Postal Code</label>
+                            <input type="text" id="postal" class="form-input" required>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Payment Method -->
+                <section class="checkout-section">
+                    <h2 class="checkout-section-title">Payment Method</h2>
+                    
+                    <label class="payment-option">
+                        <input type="radio" name="payment_method" value="card" checked>
+                        <div class="radio-custom"></div>
+                        <span class="payment-label">Standard Card Payment</span>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment_method" value="mobile">
+                        <div class="radio-custom"></div>
+                        <span class="payment-label">bKash / Nagad</span>
+                    </label>
+
+                    <!-- Mobile Financial Service Input -->
+                    <div class="mobile-payment-details" id="mobile-payment-details">
+                        <p style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 1.5rem; line-height: 1.5;">
+                            Please send the total amount to our merchant number <strong>+880 1234 567890</strong> and enter your Transaction ID below to verify your payment.
+                        </p>
+                        <div class="form-group">
+                            <label for="trxId">Transaction ID</label>
+                            <input type="text" id="trxId" class="form-input" placeholder="e.g. 8A7B6C5D4E">
+                        </div>
+                    </div>
+                </section>
+
+                <button type="submit" class="btn-submit">Confirm Acquisition</button>
+
+            </form>
+        </div>
+
+        <!-- 4. Right Column (Order Summary) -->
+        <div class="checkout-right">
+            <aside class="summary-card">
+                <h3 class="summary-title">Order Summary</h3>
+                
+                <div class="artwork-preview">
+                    <!-- Thumbnail using an Unsplash placeholder -->
+                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Artwork Thumbnail" class="artwork-thumbnail">
+                    <div class="artwork-info">
+                        <h4 class="artwork-name">Crimson Horizon</h4>
+                        <div class="artwork-details">
+                            Oil on Canvas<br>
+                            30 x 40 inches<br>
+                            Original Piece
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price-breakdown">
+                    <div class="price-row">
+                        <span>Artwork Value</span>
+                        <span>$1,200.00</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Secure Shipping</span>
+                        <span>$150.00</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Total</span>
+                        <span>$1,350.00</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+    </main>
+
+    <!-- 5. Footer -->
+    <footer>
+        <p class="footer-text">&copy; 2026 Sanjana Rahman Nowrin. All Rights Reserved.</p>
+        <p class="developer-credit">Developed by Ovi</p>
+    </footer>
+
+    <!-- Interactive JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile Menu Toggle Logic
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+
+            if (mobileBtn && navLinks) {
+                mobileBtn.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+
+            // Payment Method Toggle Logic
+            const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+            const mobilePaymentDetails = document.getElementById('mobile-payment-details');
+            const trxInput = document.getElementById('trxId');
+
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    if (e.target.value === 'mobile') {
+                        // Show mobile payment details and require transaction ID
+                        mobilePaymentDetails.style.display = 'block';
+                        trxInput.setAttribute('required', 'true');
+                    } else {
+                        // Hide mobile payment details and remove requirement
+                        mobilePaymentDetails.style.display = 'none';
+                        trxInput.removeAttribute('required');
+                        trxInput.value = ''; // clear any input
+                    }
+                });
+            });
+
+            // Form Submit Simulation
+            const checkoutForm = document.getElementById('checkout-form');
+            if (checkoutForm) {
+                checkoutForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // In a real application, this would integrate with Supabase and a payment processor
+                    alert('Thank you for your acquisition! Your inquiry has been securely submitted.');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

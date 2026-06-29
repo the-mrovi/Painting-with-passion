@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artwork Details | Painting with passion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="painting.css">
+    <script src="theme.js" defer></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">Painting with passion</a>
+        <div class="menu-toggle" id="mobile-menu-btn">☰</div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="gallery.html" class="active">Gallery</a></li>
+            <li><a href="thoughts.html">Thoughts</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="checkout.html">Inquiry Cart (0)</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="painting-showcase">
+            
+            <div class="image-column">
+                <div class="zoom-container" id="zoom-container">
+                    <div class="zoom-img" id="zoom-img">High-Res Artwork Placeholder</div>
+                </div>
+                <p class="zoom-hint">Hover to explore brushstrokes</p>
+            </div>
+
+            <div class="details-column">
+                <h1 class="painting-title">Whispers of Autumn</h1>
+                
+                <div class="painting-specs">
+                    <span class="spec-item">24" x 36"</span>
+                    <span class="spec-item">&bull;</span>
+                    <span class="spec-item">Oil on Canvas</span>
+                </div>
+
+                <div class="painting-price">$2,400 USD</div>
+
+                <div class="story-section">
+                    <h2 class="story-heading">Behind the Piece</h2>
+                    <p class="story-text">This piece was born from a quiet morning walk through the tea gardens just outside the city. The way the fog clung to the leaves before burning off in the midday sun felt like a fleeting secret.</p>
+                    <p class="story-text">I wanted to capture not just the visual palette of the changing season, but the crisp, cool feeling of the air. The heavy palette knife strokes in the foreground are meant to ground the viewer, while the thinner, glazed layers in the background invite the eye to wander into the mist.</p>
+                </div>
+
+                <div class="cta-container">
+                    <a href="checkout.html" class="btn-acquire">Acquire This Piece</a>
+                    <p class="trust-note">Includes physical Certificate of Authenticity and secure, insured global shipping.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="related-section">
+            <h2 class="section-title">More from this Collection</h2>
+            <div class="related-grid">
+                <div class="related-card">
+                    <div class="related-img">Thumbnail 1</div>
+                    <h3 class="related-title">Crimson Horizon</h3>
+                </div>
+                <div class="related-card">
+                    <div class="related-img">Thumbnail 2</div>
+                    <h3 class="related-title">Silent Echoes</h3>
+                </div>
+                <div class="related-card">
+                    <div class="related-img">Thumbnail 3</div>
+                    <h3 class="related-title">Golden Thread</h3>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p class="footer-text">&copy; 2026 Sanjana Rahman Nowrin. All Rights Reserved.</p>
+        <p class="developer-credit">Developed by Ovi</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Mobile Menu Logic
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+
+            mobileBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Magnifying Glass Zoom Effect
+            const zoomContainer = document.getElementById('zoom-container');
+            const zoomImg = document.getElementById('zoom-img');
+
+            // Only apply zoom effect if it's not a touch device (improves mobile UX)
+            const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+            if (!isTouchDevice) {
+                zoomContainer.addEventListener('mousemove', (e) => {
+                    const rect = zoomContainer.getBoundingClientRect();
+                    
+                    // Calculate mouse position relative to the container (0 to 1)
+                    const xPos = (e.clientX - rect.left) / rect.width;
+                    const yPos = (e.clientY - rect.top) / rect.height;
+
+                    // Convert to percentages for transform-origin
+                    const xPercent = xPos * 100;
+                    const yPercent = yPos * 100;
+
+                    // Update the transform origin so the image scales from the cursor position
+                    zoomImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+                });
+
+                // Reset origin when mouse leaves to avoid jerky movements on next enter
+                zoomContainer.addEventListener('mouseleave', () => {
+                    setTimeout(() => {
+                        zoomImg.style.transformOrigin = `center center`;
+                    }, 300); // Wait for the transition to finish scaling down
+                });
+            }
+        });
+    </script>
+</body>
+</html>

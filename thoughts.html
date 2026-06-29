@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thoughts & Musings | Painting with passion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="thoughts.css">
+    <script src="theme.js" defer></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">Painting with passion</a>
+        <div class="menu-toggle" id="mobile-menu-btn">☰</div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="thoughts.html" class="active">Thoughts</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="checkout.html">Inquiry Cart (0)</a></li>
+        </ul>
+    </nav>
+
+    <header class="editorial-header">
+        <h1 class="header-title">Thoughts & Musings</h1>
+        <p class="header-subtitle">A quiet space where I share the stories, inspirations, and philosophy behind the brushstrokes.</p>
+    </header>
+
+    <main class="blog-feed">
+        
+        <article class="blog-card">
+            <span class="category-tag">Studio Update</span>
+            <h2 class="post-title"><a href="post.html">Finding Light in the Shadows</a></h2>
+            <div class="post-meta">June 18, 2026 &bull; 4 min read</div>
+            <p class="post-snippet">The creative process is rarely linear. This past month in the studio has been an exploration of contrast—not just in the pigments I mix, but in the quiet moments between the brushstrokes. Embracing the darker tones has allowed the vibrant colors to truly breathe and take on a life of their own.</p>
+            <a href="post.html" class="read-more">Read Full Story</a>
+        </article>
+
+        <article class="blog-card">
+            <span class="category-tag">Inspiration</span>
+            <h2 class="post-title"><a href="post.html">The Colors of Sylhet's Tea Gardens</a></h2>
+            <div class="post-meta">May 25, 2026 &bull; 6 min read</div>
+            <p class="post-snippet">There is a specific shade of green that only exists right after the monsoon rains wash over the rolling hills. Walking through the estates early in the morning, I found myself captivated by the way the morning mist softens the landscape, turning the physical world into something that feels almost ethereal.</p>
+            <a href="post.html" class="read-more">Read Full Story</a>
+        </article>
+
+        <article class="blog-card">
+            <span class="category-tag">Exhibition</span>
+            <h2 class="post-title"><a href="post.html">Reflections on the Spring Showcase</a></h2>
+            <div class="post-meta">April 10, 2026 &bull; 5 min read</div>
+            <p class="post-snippet">Seeing my work hung in a gallery space always brings a mix of vulnerability and profound gratitude. Interacting with everyone who attended and hearing how different pieces resonated with your personal memories was the greatest gift an artist could ask for.</p>
+            <a href="post.html" class="read-more">Read Full Story</a>
+        </article>
+
+        <div class="pagination">
+            <button class="btn-older-posts">Older Posts</button>
+        </div>
+
+    </main>
+
+    <footer>
+        <p class="footer-text">&copy; 2026 Sanjana Rahman Nowrin. All Rights Reserved.</p>
+        <p class="developer-credit">Developed by Ovi</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile Menu Logic
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+
+            mobileBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Smooth Hover Transition for "Read More" links
+            const readMoreLinks = document.querySelectorAll('.read-more');
+            readMoreLinks.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    link.style.letterSpacing = '1px';
+                });
+                link.addEventListener('mouseleave', () => {
+                    link.style.letterSpacing = 'normal';
+                });
+            });
+
+            // Pagination Interaction (Simulated)
+            const olderPostsBtn = document.querySelector('.btn-older-posts');
+            if (olderPostsBtn) {
+                olderPostsBtn.addEventListener('click', function() {
+                    this.textContent = "Loading...";
+                    this.style.opacity = "0.7";
+                    setTimeout(() => {
+                        this.textContent = "No older posts available";
+                        this.style.cursor = "default";
+                        this.style.borderBottom = "none";
+                    }, 1000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

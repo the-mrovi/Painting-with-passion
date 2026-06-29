@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery | Painting with passion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gallery.css">
+    <script src="theme.js" defer></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">Painting with passion</a>
+        <div class="menu-toggle" id="mobile-menu-btn">☰</div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="gallery.html" class="active">Gallery</a></li>
+            <li><a href="thoughts.html">Thoughts</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="checkout.html">Inquiry Cart (0)</a></li>
+        </ul>
+    </nav>
+
+    <header class="page-header">
+        <h1 class="page-title">The Collection</h1>
+    </header>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Artworks</button>
+        <button class="filter-btn" data-filter="available">Available Pieces</button>
+        <button class="filter-btn" data-filter="private">Private Collection</button>
+    </div>
+
+    <section class="gallery-container">
+        <div class="masonry-grid" id="masonry-grid">
+            
+            <div class="art-card" data-status="available">
+                <div class="art-image img-tall">Placeholder: Oil, 30x40</div>
+                <div class="art-overlay">
+                    <h3 class="art-title">Crimson Horizon</h3>
+                    <span class="art-status status-available">Available</span>
+                </div>
+            </div>
+
+            <div class="art-card" data-status="private">
+                <div class="art-image img-short">Placeholder: Acrylic, 16x20</div>
+                <div class="art-overlay">
+                    <h3 class="art-title">Silent Echoes</h3>
+                    <span class="art-status status-sold">Private Collection</span>
+                </div>
+            </div>
+
+            <div class="art-card" data-status="available">
+                <div class="art-image img-medium">Placeholder: Mixed Media, 24x36</div>
+                <div class="art-overlay">
+                    <h3 class="art-title">Veil of Morning</h3>
+                    <span class="art-status status-available">Available</span>
+                </div>
+            </div>
+
+            <div class="art-card" data-status="private">
+                <div class="art-image img-tall">Placeholder: Oil, 36x48</div>
+                <div class="art-overlay">
+                    <h3 class="art-title">Nocturne in Blue</h3>
+                    <span class="art-status status-sold">Private Collection</span>
+                </div>
+            </div>
+
+            <div class="art-card" data-status="available">
+                <div class="art-image img-medium">Placeholder: Charcoal & Gold, 18x24</div>
+                <div class="art-overlay">
+                    <h3 class="art-title">Golden Thread</h3>
+                    <span class="art-status status-available">Available</span>
+                </div>
+            </div>
+
+            <div class="art-card" data-status="available">
+                <div class="art-image img-short">Placeholder: Oil, 20x20</div>
+                <div class="art-overlay">
+                    <h3 class="art-title">Stillness</h3>
+                    <span class="art-status status-available">Available</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p class="footer-text">&copy; 2026 Sanjana Rahman Nowrin. All Rights Reserved.</p>
+        <p class="developer-credit">Developed by Stranger</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Mobile Menu Logic
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+
+            mobileBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Filtering Logic
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const artCards = document.querySelectorAll('.art-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // 1. Update active state on buttons
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // 2. Get the filter category
+                    const filterValue = btn.getAttribute('data-filter');
+
+                    // 3. Loop through cards and filter
+                    artCards.forEach(card => {
+                        const cardStatus = card.getAttribute('data-status');
+                        
+                        if (filterValue === 'all' || cardStatus === filterValue) {
+                            card.style.display = 'block';
+                            // Slight delay hack to re-trigger the CSS animation 
+                            card.style.animation = 'none';
+                            card.offsetHeight; /* trigger reflow */
+                            card.style.animation = null; 
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+        });
+    </script>
+</body>
+</html>

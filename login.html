@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Painting with passion</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Base Stylesheet (Nav, Footer, Reset) -->
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="login.css">
+    <script src="theme.js" defer></script>
+</head>
+<body>
+
+    <!-- 1. Navigation Bar -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">Painting with passion</a>
+        <div class="menu-toggle" id="mobile-menu-btn">☰</div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="thoughts.html">Thoughts</a></li>
+            <li><a href="login.html" class="active">Login</a></li>
+            <li><a href="checkout.html">Inquiry Cart (0)</a></li>
+        </ul>
+    </nav>
+
+    <!-- 2 & 3. Atmospheric Background & Auth Card -->
+    <main class="login-page-wrapper">
+        <div class="bg-image"></div>
+        <div class="bg-overlay"></div>
+
+        <div class="auth-card">
+            <!-- 4. Interactive Toggle -->
+            <div class="auth-toggle">
+                <button class="toggle-btn active" id="btn-signin">Sign In</button>
+                <button class="toggle-btn" id="btn-signup">Create Account</button>
+            </div>
+
+            <!-- 5. Form Elements -->
+            
+            <!-- Sign In Form -->
+            <form id="form-signin" class="auth-form active">
+                <div class="input-group">
+                    <input type="email" class="auth-input" placeholder="Email Address" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" class="auth-input" placeholder="Password" required>
+                </div>
+                <span class="forgot-link">Forgot Password?</span>
+                <button type="submit" class="btn-auth">Enter Studio</button>
+            </form>
+
+            <!-- Create Account Form -->
+            <form id="form-signup" class="auth-form">
+                <div class="input-group">
+                    <input type="text" class="auth-input" placeholder="Full Name" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" class="auth-input" placeholder="Email Address" required>
+                </div>
+                <div class="input-group">
+                    <input type="tel" class="auth-input" placeholder="Phone Number" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" class="auth-input" placeholder="Password" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" class="auth-input" placeholder="Confirm Password" required>
+                </div>
+                <button type="submit" class="btn-auth">Join Community</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- 6. Footer -->
+    <footer>
+        <p class="footer-text">&copy; 2026 Sanjana Rahman Nowrin. All Rights Reserved.</p>
+        <p class="developer-credit">Developed by Ovi</p>
+    </footer>
+
+    <!-- Interactive JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile Menu Toggle Logic
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+
+            if (mobileBtn && navLinks) {
+                mobileBtn.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+
+            // Auth Toggle Logic
+            const btnSignIn = document.getElementById('btn-signin');
+            const btnSignUp = document.getElementById('btn-signup');
+            const formSignIn = document.getElementById('form-signin');
+            const formSignUp = document.getElementById('form-signup');
+
+            if (btnSignIn && btnSignUp && formSignIn && formSignUp) {
+                btnSignIn.addEventListener('click', () => {
+                    btnSignIn.classList.add('active');
+                    btnSignUp.classList.remove('active');
+                    formSignIn.classList.add('active');
+                    formSignUp.classList.remove('active');
+                });
+
+                btnSignUp.addEventListener('click', () => {
+                    btnSignUp.classList.add('active');
+                    btnSignIn.classList.remove('active');
+                    formSignUp.classList.add('active');
+                    formSignIn.classList.remove('active');
+                });
+            }
+
+            // Prevent default submission for testing (would connect to Supabase later)
+            if(formSignIn) {
+                formSignIn.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    console.log('Sign In logic would run here');
+                });
+            }
+
+            if(formSignUp) {
+                formSignUp.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    console.log('Sign Up logic would run here');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

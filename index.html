@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painting with passion | Sanjana Rahman Nowrin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="theme.js" defer></script>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">Painting with passion</a>
+        <div class="menu-toggle" id="mobile-menu-btn">☰</div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="thoughts.html">Thoughts</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="checkout.html">Inquiry Cart (0)</a></li>
+        </ul>
+    </nav>
+
+    <section class="highlights-section">
+        <div class="highlight-item">
+            <div class="highlight-circle">IMG</div>
+            <span class="highlight-label">In Studio</span>
+        </div>
+        <div class="highlight-item">
+            <div class="highlight-circle">IMG</div>
+            <span class="highlight-label">Exhibitions</span>
+        </div>
+        <div class="highlight-item">
+            <div class="highlight-circle">IMG</div>
+            <span class="highlight-label">Process</span>
+        </div>
+        <div class="highlight-item">
+            <div class="highlight-circle">IMG</div>
+            <span class="highlight-label">Inspiration</span>
+        </div>
+        <div class="highlight-item">
+            <div class="highlight-circle">IMG</div>
+            <span class="highlight-label">Travel</span>
+        </div>
+    </section>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Step Into the Canvas</h1>
+            <p class="hero-subtitle">Exploring emotion, texture, and light through the artistic vision of Sanjana Rahman
+                Nowrin.</p>
+            <a href="gallery.html" class="btn">Explore Gallery</a>
+        </div>
+    </header>
+
+    <section class="featured-section" id="gallery">
+        <h2 class="section-title">Selected Works</h2>
+        <div class="art-grid">
+            <div class="art-card">
+                <div class="art-image-placeholder">Oil on Canvas, 24x36</div>
+                <h3 class="art-title">Whispers of Autumn</h3>
+                <p class="art-medium">Oil & Palette Knife</p>
+            </div>
+            <div class="art-card">
+                <div class="art-image-placeholder">Acrylic, 18x24</div>
+                <h3 class="art-title">Midnight Serenade</h3>
+                <p class="art-medium">Acrylic on Wood</p>
+            </div>
+            <div class="art-card">
+                <div class="art-image-placeholder">Mixed Media, 40x40</div>
+                <h3 class="art-title">Ethereal Bloom</h3>
+                <p class="art-medium">Mixed Media & Gold Leaf</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="thought-section" id="thoughts">
+        <div class="thought-container">
+            <span class="thought-date">October 14, 2026</span>
+            <h2 class="thought-title">Finding Light in the Shadows</h2>
+            <p class="thought-excerpt">The creative process is rarely linear. This past month in the studio has been an
+                exploration of contrast—not just in the pigments I mix, but in the quiet moments between the
+                brushstrokes. Here is what I learned about embracing the dark to make the vibrant colors sing...</p>
+            <a href="post.html" class="read-more">Read Full Story</a>
+        </div>
+    </section>
+
+    <footer>
+        <p class="footer-text">&copy; 2026 Sanjana Rahman Nowrin. All Rights Reserved.</p>
+        <p class="developer-credit">Developed by Stranger</p>
+    </footer>
+
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-box">
+            <span class="modal-close" id="close-modal">&times;</span>
+            <h3 class="modal-text">Please login or register to view exclusive behind-the-scenes highlights.</h3>
+            <a href="login.html" class="btn">Login / Register</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile Menu Toggle
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+
+            mobileBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Highlights Modal Logic
+            const highlightItems = document.querySelectorAll('.highlight-item');
+            const modalOverlay = document.getElementById('auth-modal');
+            const closeModal = document.getElementById('close-modal');
+
+            // Open modal on highlight click
+            highlightItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    modalOverlay.classList.add('active');
+                });
+            });
+
+            // Close modal on 'X' click
+            closeModal.addEventListener('click', () => {
+                modalOverlay.classList.remove('active');
+            });
+
+            // Close modal if clicking outside the white box
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    modalOverlay.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
