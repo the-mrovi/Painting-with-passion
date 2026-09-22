@@ -1,194 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="auth-pending">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Painting with passion</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
-    <!-- Base Stylesheet (Variables & Reset) -->
-    <link rel="stylesheet" href="style.css">
-    
-    <link rel="stylesheet" href="admin.css">
-    <script src="theme.js" defer></script>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin studio | Painting with passion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="admin.js" defer></script>
 </head>
-<body>
-
-    <!-- 1 & 2. Sidebar Layout and Navigation -->
-    <aside class="sidebar">
-        <a href="index.html" class="sidebar-logo">Painting with passion</a>
-        
-        <nav class="nav-menu">
-            <a class="nav-item" data-target="tab-dashboard">Dashboard Overview</a>
-            <a class="nav-item active" data-target="tab-upload">Upload Artwork</a>
-            <a class="nav-item" data-target="tab-thoughts">Write a Thought</a>
-            <a class="nav-item" data-target="tab-highlights">Manage Highlights</a>
+<body data-access="admin" class="admin-body">
+    <header class="admin-mobile-header"><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button type="button" data-admin-nav-toggle aria-controls="admin-sidebar" aria-expanded="false"><span></span><span></span><span></span><span class="sr-only">Open Admin Studio menu</span></button></header>
+    <aside class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-header"><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button class="admin-sidebar-close" type="button" data-admin-nav-toggle aria-label="Close Admin Studio menu">×</button></div>
+        <div class="admin-studio-label"><span>S</span><div><strong>Studio admin</strong><small>Sanjana’s workspace</small></div></div>
+        <nav aria-label="Admin sections">
+            <button type="button" data-admin-tab="overview">Overview</button>
+            <button type="button" data-admin-tab="artwork">Upload artwork</button>
+            <button type="button" data-admin-tab="thought">Upload thought</button>
+            <button type="button" data-admin-tab="highlight">Manage highlights</button>
+            <button type="button" data-admin-tab="orders">Orders</button>
+            <button type="button" data-admin-tab="manage">Manage content</button>
         </nav>
-
-        <a class="logout-btn" href="login.html">Logout</a>
+        <nav class="admin-site-links" aria-label="Website pages"><span>View website</span><a href="index.html">Home</a><a href="gallery.html">Gallery</a><a href="thoughts.html">Thoughts</a><a href="highlights.html">Highlights</a></nav>
+        <div class="admin-sidebar-footer"><button class="theme-toggle" type="button" data-theme-toggle>Dark</button><button id="admin-signout" type="button">Sign out</button><span>Rahman Ovi</span></div>
     </aside>
+    <button class="admin-nav-backdrop" type="button" data-admin-nav-toggle aria-label="Close Admin Studio menu"></button>
 
-    <!-- 3. Main Workspace -->
-    <main class="main-workspace">
-        
-        <!-- Dashboard Placeholder Tab -->
-        <div class="tab-pane" id="tab-dashboard">
-            <h1 class="section-header">Dashboard Overview</h1>
-            <p style="color: var(--text-gray);">Traffic analytics and sales summary metrics will be integrated here.</p>
-        </div>
+    <main class="admin-main">
+        <section class="admin-panel active" data-admin-panel="overview">
+            <header class="admin-heading"><div><p class="eyebrow">Today in the studio</p><h1>Overview</h1></div><a href="index.html" target="_blank">Open website ↗</a></header>
+            <div class="stats-grid"><article><span>Artworks</span><strong id="stat-paintings">—</strong></article><article><span>Thoughts</span><strong id="stat-thoughts">—</strong></article><article><span>Comments</span><strong id="stat-comments">—</strong></article><article><span>Highlights</span><strong id="stat-highlights">—</strong></article></div>
+            <section class="admin-section"><header><p class="eyebrow">Community</p><h2>Recent activity</h2></header><div class="activity-feed loading-block" id="activity-feed"></div></section>
+        </section>
 
-        <!-- Upload Artwork Tab (Default Active) -->
-        <div class="tab-pane active" id="tab-upload">
-            <h1 class="section-header">Upload New Artwork</h1>
-            
-            <form class="upload-form" id="form-upload">
-                
-                <!-- Drag & Drop Zone -->
-                <div class="drop-zone" id="drop-zone">
-                    <p class="drop-zone-text">Drag & Drop High-Res Artwork Here</p>
-                    <p class="drop-zone-sub">or click to browse files (JPEG, PNG up to 15MB)</p>
-                    <input type="file" id="file-input" hidden accept="image/*">
-                </div>
-
-                <!-- Form Inputs -->
-                <div class="form-grid">
-                    <div class="input-group">
-                        <input type="text" class="admin-input" placeholder="Artwork Title" required>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" class="admin-input" placeholder="Price / Value (e.g. $1,200 USD)">
-                    </div>
-                    <div class="input-group">
-                        <input type="text" class="admin-input" placeholder="Dimensions (e.g. 24&quot; x 36&quot;)">
-                    </div>
-                    <div class="input-group">
-                        <input type="text" class="admin-input" placeholder="Medium (e.g. Oil on Canvas)">
-                    </div>
-                    <div class="input-group full-width">
-                        <textarea class="admin-textarea" placeholder="The Inspiration / Story"></textarea>
-                    </div>
-                </div>
-
-                <!-- Availability Toggle -->
-                <div class="toggle-group">
-                    <span class="toggle-label" id="availability-label">Status: Available for Acquisition</span>
-                    <label class="switch">
-                        <input type="checkbox" id="status-toggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-
-                <!-- Submit -->
-                <button type="submit" class="btn-publish">Publish Artwork</button>
+        <section class="admin-panel" data-admin-panel="artwork">
+            <header class="admin-heading"><div><p class="eyebrow">The collection</p><h1>Publish artwork</h1><p>Add a finished painting with clear purchasing details.</p></div></header>
+            <form class="admin-form" id="artwork-form">
+                <label class="file-field"><span>Artwork image</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required><small>JPEG, PNG, or WebP · up to 15MB</small></label>
+                <label>Artwork name<input name="title" required maxlength="180"></label>
+                <label>Short caption<input name="caption" maxlength="240" placeholder="A single line shown near the title"></label>
+                <div class="form-pair"><label>Medium<input name="medium" placeholder="Oil on canvas"></label><label>Dimensions<input name="dimensions" placeholder="24 × 36 in"></label></div>
+                <div class="form-pair"><label>Price<input name="price" type="number" min="0" step="0.01" placeholder="Leave empty for price on request"></label><label>Currency<select name="currency"><option>BDT</option><option>USD</option></select></label></div>
+                <label>About the piece<textarea name="description" rows="7" placeholder="Story, materials, and details"></textarea></label>
+                <div class="check-row"><label><input name="is_available" type="checkbox" checked> Available to order</label><label><input name="published" type="checkbox" checked> Published</label></div>
+                <button class="button primary" type="submit">Publish artwork</button>
             </form>
-        </div>
+        </section>
 
-        <!-- Thoughts Placeholder Tab -->
-        <div class="tab-pane" id="tab-thoughts">
-            <h1 class="section-header">Write a Thought</h1>
-            <p style="color: var(--text-gray);">The markdown editor for publishing personal blog entries will be placed here.</p>
-        </div>
+        <section class="admin-panel" data-admin-panel="thought">
+            <header class="admin-heading"><div><p class="eyebrow">Writing desk</p><h1>Publish a thought</h1><p>Keep it simple. The reading time is calculated automatically.</p></div></header>
+            <div class="admin-split">
+                <form class="admin-form" id="thought-form"><label>Title<input name="title" required maxlength="180"></label><label>Category<select name="category_id" data-thought-category-select></select></label><label>Short excerpt<textarea name="excerpt" rows="3" placeholder="Optional summary for the thoughts page"></textarea></label><label>Thought<textarea name="content" rows="15" required></textarea></label><label class="check-label"><input name="published" type="checkbox" checked> Published</label><button class="button primary" type="submit">Publish thought</button></form>
+                <aside class="category-manager"><p class="eyebrow">Organisation</p><h2>Thought categories</h2><p>Categories are shown in this order in search and filters.</p><form data-category-form="thought"><input aria-label="New thought category" placeholder="New category" maxlength="60" required><button type="submit">Add</button></form><div id="thought-category-list"></div></aside>
+            </div>
+        </section>
 
-        <!-- Highlights Placeholder Tab -->
-        <div class="tab-pane" id="tab-highlights">
-            <h1 class="section-header">Manage Highlights</h1>
-            <p style="color: var(--text-gray);">The vertical story media upload and management interface will be placed here.</p>
-        </div>
+        <section class="admin-panel" data-admin-panel="highlight">
+            <header class="admin-heading"><div><p class="eyebrow">Studio stories</p><h1>Highlights</h1><p>Share a short image or video inside an organised highlight.</p></div></header>
+            <div class="admin-split">
+                <form class="admin-form" id="highlight-form"><label class="file-field"><span>Image or video</span><input name="media" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" required><small>Images or short MP4/WebM video · up to 50MB</small></label><label>Category<select name="category_id" data-highlight-category-select required></select></label><label>Caption<textarea name="caption" rows="5" maxlength="900" placeholder="Maximum 100 words"></textarea><small id="highlight-word-count">0/100 words</small></label><label class="check-label"><input name="published" type="checkbox" checked> Published</label><button class="button primary" type="submit">Share highlight</button></form>
+                <aside class="category-manager"><p class="eyebrow">Organisation</p><h2>Highlight categories</h2><p>Create categories such as “In studio” or “Exhibitions”, then sort them.</p><form data-category-form="highlight"><input aria-label="New highlight category" placeholder="New category" maxlength="60" required><button type="submit">Add</button></form><div id="highlight-category-list"></div></aside>
+            </div>
+        </section>
 
-        <!-- 5. Footer -->
-        <footer class="admin-footer">
-            System developed by Ovi
-        </footer>
+        <section class="admin-panel" data-admin-panel="orders">
+            <header class="admin-heading"><div><p class="eyebrow">Purchases</p><h1>Orders</h1><p>Customer, delivery, payment preference, and artwork snapshots are kept together for easy export later.</p></div></header>
+            <div class="orders-list loading-block" id="orders-list"></div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="manage">
+            <header class="admin-heading"><div><p class="eyebrow">Library</p><h1>Manage content</h1><p>Open published work directly, correct mistakes, moderate comments, or restrict an account.</p></div></header>
+            <div class="manage-tabs" role="tablist"><button class="active" data-manage-tab="paintings">Artworks</button><button data-manage-tab="thoughts">Thoughts</button><button data-manage-tab="highlights">Highlights</button><button data-manage-tab="comments">Comments</button><button data-manage-tab="users">Users</button></div>
+            <div class="manage-panel active" data-manage-panel="paintings"><div class="manage-list loading-block" id="painting-admin-list"></div></div>
+            <div class="manage-panel" data-manage-panel="thoughts"><div class="manage-list loading-block" id="thought-admin-list"></div></div>
+            <div class="manage-panel" data-manage-panel="highlights"><div class="manage-list loading-block" id="highlight-admin-list"></div></div>
+            <div class="manage-panel" data-manage-panel="comments"><div class="manage-list loading-block" id="comment-admin-list"></div></div>
+            <div class="manage-panel" data-manage-panel="users"><div class="manage-list loading-block" id="user-admin-list"></div></div>
+        </section>
     </main>
 
-    <!-- 4. Interactive JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // Tab Navigation Logic
-            const navItems = document.querySelectorAll('.nav-item');
-            const tabPanes = document.querySelectorAll('.tab-pane');
-
-            navItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    // Remove active states from all
-                    navItems.forEach(n => n.classList.remove('active'));
-                    tabPanes.forEach(t => t.classList.remove('active'));
-
-                    // Add active state to clicked item and corresponding tab
-                    item.classList.add('active');
-                    const targetId = item.getAttribute('data-target');
-                    document.getElementById(targetId).classList.add('active');
-                });
-            });
-
-            // Drag and Drop Zone Logic
-            const dropZone = document.getElementById('drop-zone');
-            const fileInput = document.getElementById('file-input');
-
-            // Trigger file input on click
-            dropZone.addEventListener('click', () => fileInput.click());
-
-            // Handle visual states during drag
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.classList.add('dragover');
-            });
-
-            dropZone.addEventListener('dragleave', () => {
-                dropZone.classList.remove('dragover');
-            });
-
-            // Handle file drop
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('dragover');
-                
-                if (e.dataTransfer.files.length) {
-                    fileInput.files = e.dataTransfer.files;
-                    updateDropZoneText(fileInput.files[0].name);
-                }
-            });
-
-            // Handle file selection via click browser
-            fileInput.addEventListener('change', () => {
-                if (fileInput.files.length) {
-                    updateDropZoneText(fileInput.files[0].name);
-                }
-            });
-
-            // Update UI with selected filename
-            function updateDropZoneText(filename) {
-                dropZone.innerHTML = `
-                    <p class="drop-zone-text" style="color: var(--accent-color); font-size: 1.2rem;">${filename}</p>
-                    <p class="drop-zone-sub">File staged for upload</p>
-                `;
-            }
-
-            // Status Toggle Label Logic
-            const statusToggle = document.getElementById('status-toggle');
-            const availabilityLabel = document.getElementById('availability-label');
-
-            statusToggle.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    availabilityLabel.textContent = "Status: Available for Acquisition";
-                } else {
-                    availabilityLabel.textContent = "Status: Private Collection / Sold";
-                }
-            });
-
-            // Prevent default submission to simulate upload
-            const formUpload = document.getElementById('form-upload');
-            formUpload.addEventListener('submit', (e) => {
-                e.preventDefault();
-                alert("Preparing to upload artwork metadata and image to Supabase database...");
-                // formUpload.reset(); 
-                // updateDropZoneText("Drag & Drop High-Res Artwork Here");
-            });
-        });
-    </script>
+    <dialog class="editor-dialog" id="edit-dialog"><form class="admin-form" id="editor-form"><header><div><p class="eyebrow">Content editor</p><h2 id="editor-title">Edit content</h2></div><button type="button" data-close-editor aria-label="Close">×</button></header><div id="editor-fields"></div><div class="dialog-actions"><button type="button" class="button quiet" data-close-editor>Cancel</button><button type="submit" class="button primary">Save changes</button></div></form></dialog>
 </body>
 </html>

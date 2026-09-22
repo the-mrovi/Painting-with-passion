@@ -1,0 +1,13 @@
+# Local editor and operating-system files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+website-order-system-*.json
+
+# Unreferenced local mock/generated artwork; production artwork is in Supabase Storage
+img/

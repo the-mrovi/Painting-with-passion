@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" class="auth-pending">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your account | Painting with passion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="profile.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="profile.js" defer></script>
+</head>
+<body data-access="member">
+    <nav class="site-nav" aria-label="Main navigation"><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-label="Open menu"><span></span><span></span></button><div class="nav-links" data-nav-links><a href="gallery.html">Gallery</a><a href="highlights.html">Highlights</a><a href="thoughts.html">Thoughts</a><a class="cart-link" href="checkout.html">Cart <span data-cart-count>0</span></a><div data-account-slot></div><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div></nav>
+    <main class="profile-page">
+        <header class="profile-heading loading-block" id="profile-heading"></header>
+        <div class="profile-layout">
+            <div class="settings-column">
+                <section class="settings-section"><header><p class="eyebrow">Profile</p><h2>Your details</h2><p>Used for your account and to prefill order information.</p></header><form class="stacked-form" id="profile-form"><label>Full name<input name="full_name" autocomplete="name" required></label><label>Email<input name="email" type="email" disabled></label><label>Phone<input name="phone_number" type="tel" autocomplete="tel"></label><button class="button primary" type="submit">Save details</button></form></section>
+                <section class="settings-section"><header><p class="eyebrow">Appearance</p><h2>Theme</h2><p>Your choice is saved on this device and follows you across pages.</p></header><div class="theme-choices"><button type="button" data-theme-choice="light">Light</button><button type="button" data-theme-choice="dark">Dark</button></div></section>
+                <section class="settings-section"><header><p class="eyebrow">Security</p><h2>Change password</h2></header><form class="stacked-form" id="password-form"><label>New password<input name="password" type="password" minlength="8" autocomplete="new-password" required></label><label>Confirm password<input name="password_confirmation" type="password" minlength="8" autocomplete="new-password" required></label><button class="button quiet" type="submit">Update password</button></form></section>
+                <button class="signout-row" id="profile-signout" type="button"><span><strong>Sign out</strong><small>End this session on the current device.</small></span><span>→</span></button>
+            </div>
+            <section class="orders-column" id="orders"><header><p class="eyebrow">Purchase history</p><h2>Your orders</h2></header><div class="profile-orders loading-block" id="profile-orders"></div></section>
+        </div>
+    </main>
+    <footer class="site-footer"><div><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><p>Paintings and notes by Sanjana Rahman Nowrin.</p></div><div><a href="thoughts.html">Thoughts</a><a href="https://www.instagram.com/painting_with_passion_._/" target="_blank" rel="noreferrer">Instagram</a></div><p>© 2026 · Developed by Rahman Ovi</p></footer>
+</body>
+</html>

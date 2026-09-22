@@ -1,213 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="auth-pending">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Highlights | Painting with passion</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="highlights.css">
-    <script src="theme.js" defer></script>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Studio highlights | Painting with passion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="highlights.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="highlights.js" defer></script>
 </head>
-<body>
-
-    <div class="viewer-wrapper">
-        <div class="story-container">
-            
-            <div class="loading-spinner"></div>
-            
-            <!-- Media element -->
-            <img id="story-image" class="story-media" src="" alt="Story highlight">
-            
-            <div class="story-overlay"></div>
-
-            <!-- Top Header -->
-            <div class="story-header">
-                <div class="progress-bars" id="progress-container">
-                    <!-- Progress segments will be injected via JS -->
-                </div>
-                
-                <div class="story-info">
-                    <div class="profile-group">
-                        <div class="profile-thumb"></div>
-                        <div class="profile-text">
-                            <span class="profile-name">Sanjana Rahman Nowrin</span>
-                            <span class="category-name" id="category-label">In the Studio</span>
-                        </div>
-                    </div>
-                    <a href="index.html" class="close-btn">&times;</a>
-                </div>
-            </div>
-
-            <!-- Navigation Areas -->
-            <div class="nav-area nav-left" id="nav-prev">
-                <div class="nav-arrow">&#10094;</div>
-            </div>
-            <div class="nav-area nav-right" id="nav-next">
-                <div class="nav-arrow">&#10095;</div>
-            </div>
-
-            <!-- Content Overlay -->
-            <div class="story-caption" id="story-caption">
-                <!-- Caption text injected via JS -->
-            </div>
-
-        </div>
-        
-        <!-- Footer -->
-        <div class="story-footer">DEVELOPED BY OVI</div>
-    </div>
-
-    <!-- Interactive JavaScript -->
-    <script>
-        // Story Data Simulation utilizing Unsplash art/studio placeholder images
-        const stories = [
-            {
-                url: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                caption: "Mixing the perfect shade of cerulean blue."
-            },
-            {
-                url: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                caption: "Working on the final layers of 'Eternal Silence'."
-            },
-            {
-                url: 'https://images.unsplash.com/photo-1542887800-faca0261c9e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                caption: "Midnight inspiration in the quiet studio."
-            }
-        ];
-
-        let currentIndex = 0;
-        const STORY_DURATION = 5000; // 5 seconds per slide
-        let progressInterval;
-        let startTime;
-        let isPaused = false;
-
-        // DOM Elements
-        const storyImage = document.getElementById('story-image');
-        const storyCaption = document.getElementById('story-caption');
-        const progressContainer = document.getElementById('progress-container');
-        const navPrev = document.getElementById('nav-prev');
-        const navNext = document.getElementById('nav-next');
-
-        // Initialize UI
-        function initStories() {
-            // Create progress bar segments
-            stories.forEach((_, idx) => {
-                const segment = document.createElement('div');
-                segment.className = 'progress-segment';
-                segment.innerHTML = `<div class="progress-fill" id="fill-${idx}"></div>`;
-                progressContainer.appendChild(segment);
-            });
-
-            loadStory(currentIndex);
-            
-            // Event Listeners for Navigation
-            navPrev.addEventListener('click', prevStory);
-            navNext.addEventListener('click', nextStory);
-            
-            // Pause story on hold (great UX pattern for story viewers)
-            const pauseEvents = ['mousedown', 'touchstart'];
-            const resumeEvents = ['mouseup', 'touchend', 'mouseleave', 'touchcancel'];
-
-            pauseEvents.forEach(evt => {
-                navNext.addEventListener(evt, pauseStory);
-                navPrev.addEventListener(evt, pauseStory);
-            });
-
-            resumeEvents.forEach(evt => {
-                navNext.addEventListener(evt, resumeStory);
-                navPrev.addEventListener(evt, resumeStory);
-            });
-        }
-
-        // Load specific story
-        function loadStory(index) {
-            // Manage progress bars
-            for(let i=0; i<stories.length; i++) {
-                const fill = document.getElementById(`fill-${i}`);
-                if(i < index) {
-                    fill.style.width = '100%';
-                } else {
-                    fill.style.width = '0%';
-                }
-            }
-
-            // Crossfade update
-            storyImage.style.opacity = '0';
-            setTimeout(() => {
-                storyImage.src = stories[index].url;
-                storyCaption.textContent = stories[index].caption;
-                
-                // Wait until image is actually loaded to fade it in
-                storyImage.onload = () => {
-                    storyImage.style.opacity = '1';
-                };
-            }, 100);
-
-            // Restart progress animation
-            startProgress();
-        }
-
-        function startProgress() {
-            clearInterval(progressInterval);
-            startTime = Date.now();
-            
-            progressInterval = setInterval(() => {
-                if(isPaused) {
-                    // Shift start time forward while paused to "freeze" the timer
-                    startTime += 16; 
-                    return;
-                }
-
-                const elapsed = Date.now() - startTime;
-                const percentage = (elapsed / STORY_DURATION) * 100;
-                
-                const currentFill = document.getElementById(`fill-${currentIndex}`);
-                if(currentFill) {
-                    currentFill.style.width = Math.min(percentage, 100) + '%';
-                }
-
-                if(elapsed >= STORY_DURATION) {
-                    nextStory();
-                }
-            }, 16); // ~60fps smooth animation
-        }
-
-        function prevStory(e) {
-            if(e) e.preventDefault();
-            if(currentIndex > 0) {
-                currentIndex--;
-                loadStory(currentIndex);
-            } else {
-                // If at the beginning, restart the current slide
-                loadStory(currentIndex);
-            }
-        }
-
-        function nextStory(e) {
-            if(e) e.preventDefault();
-            if(currentIndex < stories.length - 1) {
-                currentIndex++;
-                loadStory(currentIndex);
-            } else {
-                // Reached the end of the highlights -> redirect back to homepage
-                window.location.href = 'index.html';
-            }
-        }
-
-        function pauseStory() {
-            isPaused = true;
-        }
-
-        function resumeStory() {
-            isPaused = false;
-        }
-
-        // Boot
-        document.addEventListener('DOMContentLoaded', initStories);
-    </script>
+<body data-access="member" class="highlights-body">
+    <nav class="site-nav" aria-label="Main navigation"><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-label="Open menu"><span></span><span></span></button><div class="nav-links" data-nav-links><a href="gallery.html">Gallery</a><a class="active" href="highlights.html">Highlights</a><a href="thoughts.html">Thoughts</a><a class="cart-link" href="checkout.html">Cart <span data-cart-count>0</span></a><div data-account-slot></div><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div></nav>
+    <main class="highlights-page">
+        <header class="page-intro highlights-intro"><p class="eyebrow">Studio stories</p><h1>Highlights</h1><p>Small windows into works in progress, exhibitions, colour studies, and everyday life around the studio.</p></header>
+        <section class="highlight-library" aria-labelledby="highlight-library-title">
+            <div class="highlight-library-heading"><div><p class="eyebrow">Browse the archive</p><h2 id="highlight-library-title">Choose a collection</h2></div><p>Each circle opens a curated set of images, short videos, and notes.</p></div>
+            <nav class="highlight-categories" id="highlight-categories" aria-label="Highlight categories"></nav>
+        </section>
+        <section class="highlight-feature" aria-labelledby="active-highlight-title">
+            <header class="highlight-feature-heading"><div><p class="eyebrow" id="active-highlight-label">Now viewing</p><h2 id="active-highlight-title">Studio highlights</h2></div><p id="active-highlight-count"></p></header>
+            <div class="highlight-viewer-shell"><section class="highlight-viewer loading-block" id="highlight-viewer" aria-live="polite"></section></div>
+        </section>
+    </main>
+    <footer class="site-footer"><div><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><p>Paintings and notes by Sanjana Rahman Nowrin.</p></div><div><a href="thoughts.html">Thoughts</a><a href="https://www.instagram.com/painting_with_passion_._/" target="_blank" rel="noreferrer">Instagram</a></div><p>© 2026 · Developed by Rahman Ovi</p></footer>
 </body>
 </html>

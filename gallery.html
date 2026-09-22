@@ -1,141 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="auth-pending">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery | Painting with passion</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="gallery.css">
-    <script src="theme.js" defer></script>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The collection | Painting with passion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="gallery.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="gallery.js" defer></script>
 </head>
-<body>
-
-    <nav class="navbar">
-        <a href="index.html" class="logo">Painting with passion</a>
-        <div class="menu-toggle" id="mobile-menu-btn">☰</div>
-        <ul class="nav-links" id="nav-links">
-            <li><a href="gallery.html" class="active">Gallery</a></li>
-            <li><a href="thoughts.html">Thoughts</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="checkout.html">Inquiry Cart (0)</a></li>
-        </ul>
+<body data-access="member">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-label="Open menu"><span></span><span></span></button>
+        <div class="nav-links" data-nav-links><a class="active" href="gallery.html">Gallery</a><a href="highlights.html">Highlights</a><a href="thoughts.html">Thoughts</a><a class="cart-link" href="checkout.html">Cart <span data-cart-count>0</span></a><div data-account-slot></div><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
     </nav>
-
-    <header class="page-header">
-        <h1 class="page-title">The Collection</h1>
-    </header>
-
-    <div class="filter-bar">
-        <button class="filter-btn active" data-filter="all">All Artworks</button>
-        <button class="filter-btn" data-filter="available">Available Pieces</button>
-        <button class="filter-btn" data-filter="private">Private Collection</button>
-    </div>
-
-    <section class="gallery-container">
-        <div class="masonry-grid" id="masonry-grid">
-            
-            <div class="art-card" data-status="available">
-                <div class="art-image img-tall">Placeholder: Oil, 30x40</div>
-                <div class="art-overlay">
-                    <h3 class="art-title">Crimson Horizon</h3>
-                    <span class="art-status status-available">Available</span>
-                </div>
-            </div>
-
-            <div class="art-card" data-status="private">
-                <div class="art-image img-short">Placeholder: Acrylic, 16x20</div>
-                <div class="art-overlay">
-                    <h3 class="art-title">Silent Echoes</h3>
-                    <span class="art-status status-sold">Private Collection</span>
-                </div>
-            </div>
-
-            <div class="art-card" data-status="available">
-                <div class="art-image img-medium">Placeholder: Mixed Media, 24x36</div>
-                <div class="art-overlay">
-                    <h3 class="art-title">Veil of Morning</h3>
-                    <span class="art-status status-available">Available</span>
-                </div>
-            </div>
-
-            <div class="art-card" data-status="private">
-                <div class="art-image img-tall">Placeholder: Oil, 36x48</div>
-                <div class="art-overlay">
-                    <h3 class="art-title">Nocturne in Blue</h3>
-                    <span class="art-status status-sold">Private Collection</span>
-                </div>
-            </div>
-
-            <div class="art-card" data-status="available">
-                <div class="art-image img-medium">Placeholder: Charcoal & Gold, 18x24</div>
-                <div class="art-overlay">
-                    <h3 class="art-title">Golden Thread</h3>
-                    <span class="art-status status-available">Available</span>
-                </div>
-            </div>
-
-            <div class="art-card" data-status="available">
-                <div class="art-image img-short">Placeholder: Oil, 20x20</div>
-                <div class="art-overlay">
-                    <h3 class="art-title">Stillness</h3>
-                    <span class="art-status status-available">Available</span>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <footer>
-        <p class="footer-text">&copy; 2026 Sanjana Rahman Nowrin. All Rights Reserved.</p>
-        <p class="developer-credit">Developed by Stranger</p>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // Mobile Menu Logic
-            const mobileBtn = document.getElementById('mobile-menu-btn');
-            const navLinks = document.getElementById('nav-links');
-
-            mobileBtn.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-            });
-
-            // Filtering Logic
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const artCards = document.querySelectorAll('.art-card');
-
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // 1. Update active state on buttons
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-
-                    // 2. Get the filter category
-                    const filterValue = btn.getAttribute('data-filter');
-
-                    // 3. Loop through cards and filter
-                    artCards.forEach(card => {
-                        const cardStatus = card.getAttribute('data-status');
-                        
-                        if (filterValue === 'all' || cardStatus === filterValue) {
-                            card.style.display = 'block';
-                            // Slight delay hack to re-trigger the CSS animation 
-                            card.style.animation = 'none';
-                            card.offsetHeight; /* trigger reflow */
-                            card.style.animation = null; 
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                });
-            });
-            
-        });
-    </script>
+    <main class="collection-page">
+        <header class="page-intro"><p class="eyebrow">Original work</p><h1>The collection</h1><p>A living catalogue of finished pieces and paintings still looking for a home.</p></header>
+        <div class="filter-row" id="gallery-filters" aria-label="Filter artwork"><button class="filter-chip active" data-filter="all">All</button><button class="filter-chip" data-filter="available">Available</button><button class="filter-chip" data-filter="collected">Collected</button></div>
+        <section class="gallery-grid loading-block" id="gallery-grid" aria-live="polite"></section>
+    </main>
+    <footer class="site-footer"><div><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><p>Paintings and notes by Sanjana Rahman Nowrin.</p></div><div><a href="thoughts.html">Thoughts</a><a href="https://www.instagram.com/painting_with_passion_._/" target="_blank" rel="noreferrer">Instagram</a></div><p>© 2026 · Developed by Rahman Ovi</p></footer>
 </body>
 </html>

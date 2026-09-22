@@ -1,145 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<!doctype html>
+<html lang="en" class="auth-pending">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An interactive exhibition of original paintings by Sanjana Rahman Nowrin.">
     <title>Painting with passion | Sanjana Rahman Nowrin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="style.css">
-    <script src="theme.js" defer></script>
+    <link rel="stylesheet" href="home.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js" defer></script>
+    <script src="home.js" defer></script>
 </head>
+<body class="home-body">
+    <a class="home-skip-link" href="#home-exhibition">Skip to the exhibition</a>
 
-<body>
-
-    <nav class="navbar">
-        <a href="index.html" class="logo">Painting with passion</a>
-        <div class="menu-toggle" id="mobile-menu-btn">☰</div>
-        <ul class="nav-links" id="nav-links">
-            <li><a href="gallery.html">Gallery</a></li>
-            <li><a href="thoughts.html">Thoughts</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="checkout.html">Inquiry Cart (0)</a></li>
-        </ul>
+    <nav class="site-nav home-nav" aria-label="Main navigation">
+        <a class="wordmark home-wordmark" href="index.html" aria-current="page">
+            <span>Painting</span> with passion
+        </a>
+        <button class="menu-toggle home-menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="home-nav-links" aria-label="Open menu">
+            <span></span><span></span>
+        </button>
+        <div class="nav-links home-nav-links" id="home-nav-links" data-nav-links>
+            <div class="home-nav-primary">
+                <a href="gallery.html" data-protected-link>Gallery</a>
+                <a href="highlights.html" data-protected-link>Highlights</a>
+                <a href="thoughts.html">Thoughts</a>
+                <a href="profile.html" data-protected-link>Profile</a>
+                <a class="cart-link" href="checkout.html" data-protected-link>Cart <span data-cart-count>0</span></a>
+            </div>
+            <div class="home-nav-tools">
+                <div class="home-account-slot" data-account-slot><a href="login.html">Sign in</a></div>
+                <button class="theme-toggle" type="button" data-theme-toggle>Dark</button>
+            </div>
+        </div>
     </nav>
 
-    <section class="highlights-section">
-        <div class="highlight-item">
-            <div class="highlight-circle">IMG</div>
-            <span class="highlight-label">In Studio</span>
-        </div>
-        <div class="highlight-item">
-            <div class="highlight-circle">IMG</div>
-            <span class="highlight-label">Exhibitions</span>
-        </div>
-        <div class="highlight-item">
-            <div class="highlight-circle">IMG</div>
-            <span class="highlight-label">Process</span>
-        </div>
-        <div class="highlight-item">
-            <div class="highlight-circle">IMG</div>
-            <span class="highlight-label">Inspiration</span>
-        </div>
-        <div class="highlight-item">
-            <div class="highlight-circle">IMG</div>
-            <span class="highlight-label">Travel</span>
-        </div>
-    </section>
+    <main id="home-exhibition" class="home-exhibition" tabindex="-1">
+        <h1 class="home-visually-hidden">An interactive exhibition of paintings by Sanjana Rahman Nowrin</h1>
 
-    <header class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">Step Into the Canvas</h1>
-            <p class="hero-subtitle">Exploring emotion, texture, and light through the artistic vision of Sanjana Rahman
-                Nowrin.</p>
-            <a href="gallery.html" class="btn">Explore Gallery</a>
-        </div>
-    </header>
+        <section class="exhibition-shell" aria-labelledby="artwork-title">
+            <aside class="exhibition-info" aria-live="off">
+                <div class="exhibition-info-inner" id="exhibition-info-inner">
+                    <p class="exhibition-kicker">Selected painting</p>
+                    <h2 id="artwork-title">Preparing the exhibition</h2>
 
-    <section class="featured-section" id="gallery">
-        <h2 class="section-title">Selected Works</h2>
-        <div class="art-grid">
-            <div class="art-card">
-                <div class="art-image-placeholder">Oil on Canvas, 24x36</div>
-                <h3 class="art-title">Whispers of Autumn</h3>
-                <p class="art-medium">Oil & Palette Knife</p>
+                    <div class="exhibition-story-block">
+                        <div class="exhibition-rule" aria-hidden="true"></div>
+                        <p class="exhibition-label">Story</p>
+                        <div class="exhibition-story" id="artwork-story" tabindex="-1" aria-label="Painting story">
+                            <p>The studio archive is coming into view.</p>
+                        </div>
+                    </div>
+
+                    <dl class="exhibition-meta" id="artwork-meta"></dl>
+
+                    <a class="exhibition-admin-link" id="artwork-admin-link" href="admin.html#manage" hidden>
+                        Edit this work <span aria-hidden="true">↗</span>
+                    </a>
+                </div>
+
+                <div class="exhibition-index" aria-hidden="true">
+                    <span id="artwork-current">00</span>
+                    <span class="exhibition-index-line"></span>
+                    <span id="artwork-total">00</span>
+                </div>
+            </aside>
+
+            <div class="artwork-stage" id="artwork-stage" role="region" aria-roledescription="artwork carousel" aria-label="Painting exhibition" aria-describedby="artwork-gesture-hint" tabindex="0">
+                <div class="artwork-track" id="artwork-track">
+                    <div class="exhibition-loading" id="exhibition-loading" role="status">
+                        <span class="exhibition-loading-mark" aria-hidden="true"></span>
+                        <p>Opening the studio archive</p>
+                    </div>
+                </div>
+
+                <div class="artwork-controls" id="artwork-controls" hidden>
+                    <button type="button" class="artwork-control" id="artwork-previous" aria-label="Show previous painting">
+                        <span aria-hidden="true">←</span><span>Previous</span>
+                    </button>
+                    <button type="button" class="artwork-control" id="artwork-next" aria-label="Show next painting">
+                        <span>Next</span><span aria-hidden="true">→</span>
+                    </button>
+                </div>
+
+                <p class="artwork-gesture-hint" id="artwork-gesture-hint">Scroll, drag, or use arrow keys</p>
+                <p class="home-visually-hidden" id="artwork-live-status" aria-live="polite" aria-atomic="true"></p>
             </div>
-            <div class="art-card">
-                <div class="art-image-placeholder">Acrylic, 18x24</div>
-                <h3 class="art-title">Midnight Serenade</h3>
-                <p class="art-medium">Acrylic on Wood</p>
-            </div>
-            <div class="art-card">
-                <div class="art-image-placeholder">Mixed Media, 40x40</div>
-                <h3 class="art-title">Ethereal Bloom</h3>
-                <p class="art-medium">Mixed Media & Gold Leaf</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="thought-section" id="thoughts">
-        <div class="thought-container">
-            <span class="thought-date">October 14, 2026</span>
-            <h2 class="thought-title">Finding Light in the Shadows</h2>
-            <p class="thought-excerpt">The creative process is rarely linear. This past month in the studio has been an
-                exploration of contrast—not just in the pigments I mix, but in the quiet moments between the
-                brushstrokes. Here is what I learned about embracing the dark to make the vibrant colors sing...</p>
-            <a href="post.html" class="read-more">Read Full Story</a>
-        </div>
-    </section>
-
-    <footer>
-        <p class="footer-text">&copy; 2026 Sanjana Rahman Nowrin. All Rights Reserved.</p>
-        <p class="developer-credit">Developed by Stranger</p>
-    </footer>
-
-    <div class="modal-overlay" id="auth-modal">
-        <div class="modal-box">
-            <span class="modal-close" id="close-modal">&times;</span>
-            <h3 class="modal-text">Please login or register to view exclusive behind-the-scenes highlights.</h3>
-            <a href="login.html" class="btn">Login / Register</a>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Mobile Menu Toggle
-            const mobileBtn = document.getElementById('mobile-menu-btn');
-            const navLinks = document.getElementById('nav-links');
-
-            mobileBtn.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-            });
-
-            // Highlights Modal Logic
-            const highlightItems = document.querySelectorAll('.highlight-item');
-            const modalOverlay = document.getElementById('auth-modal');
-            const closeModal = document.getElementById('close-modal');
-
-            // Open modal on highlight click
-            highlightItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    modalOverlay.classList.add('active');
-                });
-            });
-
-            // Close modal on 'X' click
-            closeModal.addEventListener('click', () => {
-                modalOverlay.classList.remove('active');
-            });
-
-            // Close modal if clicking outside the white box
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) {
-                    modalOverlay.classList.remove('active');
-                }
-            });
-        });
-    </script>
+        <p class="exhibition-credit">Original works · Sanjana Rahman Nowrin</p>
+    </main>
 </body>
-
 </html>

@@ -1,107 +1,61 @@
 (function () {
     const storageKey = 'painting-with-passion-theme';
     const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
 
-    function getSystemTheme() {
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light';
-    }
-
-    function getStoredTheme() {
+    function storedTheme() {
         try {
-            return localStorage.getItem(storageKey);
-        } catch (error) {
+            const value = localStorage.getItem(storageKey);
+            return value === 'light' || value === 'dark' ? value : null;
+        } catch {
             return null;
         }
     }
 
-    function storeTheme(theme) {
-        try {
-            localStorage.setItem(storageKey, theme);
-        } catch (error) {
-            return;
-        }
+    function preferredTheme() {
+        return storedTheme() || (media.matches ? 'dark' : 'light');
     }
 
-    function updateToggleLabels(theme) {
-        const label = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+    function updateButtons(theme) {
         document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
-            button.textContent = label;
-            button.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+            button.textContent = theme === 'dark' ? 'Light' : 'Dark';
+            button.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`);
+            button.setAttribute('aria-pressed', String(theme === 'dark'));
+        });
+        document.querySelectorAll('[data-theme-choice]').forEach((button) => {
+            button.classList.toggle('active', button.dataset.themeChoice === theme);
+            button.setAttribute('aria-pressed', String(button.dataset.themeChoice === theme));
         });
     }
 
-    function applyTheme(theme, persist) {
-        root.setAttribute('data-theme', theme);
+    function apply(theme, persist = false) {
+        root.dataset.theme = theme;
         root.style.colorScheme = theme;
-        updateToggleLabels(theme);
-
         if (persist) {
-            storeTheme(theme);
+            try { localStorage.setItem(storageKey, theme); } catch { /* storage can be unavailable */ }
         }
+        updateButtons(theme);
+        window.dispatchEvent(new CustomEvent('painting-theme-change', { detail: { theme } }));
     }
 
-    function createToggleButton() {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'theme-toggle';
-        button.setAttribute('data-theme-toggle', 'true');
-        button.setAttribute('aria-label', 'Toggle color theme');
-        button.setAttribute('aria-pressed', 'false');
-        button.addEventListener('click', () => {
-            const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            applyTheme(nextTheme, true);
-        });
-        return button;
-    }
+    apply(preferredTheme());
 
-    function attachToggle(container) {
-        if (!container || container.querySelector('[data-theme-toggle]')) {
-            return;
-        }
-
-        const button = createToggleButton();
-        const navLinks = container.querySelector('.nav-links');
-        const navMenu = container.querySelector('.nav-menu');
-        const menuToggle = container.querySelector('.menu-toggle');
-
-        if (navLinks) {
-            container.insertBefore(button, navLinks);
-            return;
-        }
-
-        if (navMenu) {
-            container.insertBefore(button, navMenu);
-            return;
-        }
-
-        if (menuToggle) {
-            container.insertBefore(button, menuToggle.nextSibling);
-            return;
-        }
-
-        container.appendChild(button);
-    }
-
-    function init() {
-        const preferredTheme = getStoredTheme() || getSystemTheme();
-        applyTheme(preferredTheme, false);
-
-        document.querySelectorAll('.navbar').forEach(attachToggle);
-        document.querySelectorAll('.sidebar').forEach(attachToggle);
-        document.querySelectorAll('.story-info').forEach(attachToggle);
-
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
-            if (!getStoredTheme()) {
-                applyTheme(event.matches ? 'dark' : 'light', false);
+    document.addEventListener('DOMContentLoaded', () => {
+        updateButtons(root.dataset.theme);
+        document.addEventListener('click', (event) => {
+            const toggle = event.target.closest('[data-theme-toggle]');
+            if (toggle) {
+                apply(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
+                return;
             }
+            const choice = event.target.closest('[data-theme-choice]');
+            if (choice) apply(choice.dataset.themeChoice, true);
         });
-    }
+    });
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+    media.addEventListener('change', (event) => {
+        if (!storedTheme()) apply(event.matches ? 'dark' : 'light');
+    });
+
+    window.PaintingTheme = { apply, current: () => root.dataset.theme };
 })();

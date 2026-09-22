@@ -1,138 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="auth-pending">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Painting with passion</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
-    <!-- Base Stylesheet (Nav, Footer, Reset) -->
-    <link rel="stylesheet" href="style.css">
-    
-    <link rel="stylesheet" href="login.css">
-    <script src="theme.js" defer></script>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign in | Painting with passion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="login.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="auth.js" defer></script>
 </head>
-<body>
-
-    <!-- 1. Navigation Bar -->
-    <nav class="navbar">
-        <a href="index.html" class="logo">Painting with passion</a>
-        <div class="menu-toggle" id="mobile-menu-btn">☰</div>
-        <ul class="nav-links" id="nav-links">
-            <li><a href="gallery.html">Gallery</a></li>
-            <li><a href="thoughts.html">Thoughts</a></li>
-            <li><a href="login.html" class="active">Login</a></li>
-            <li><a href="checkout.html">Inquiry Cart (0)</a></li>
-        </ul>
-    </nav>
-
-    <!-- 2 & 3. Atmospheric Background & Auth Card -->
-    <main class="login-page-wrapper">
-        <div class="bg-image"></div>
-        <div class="bg-overlay"></div>
-
-        <div class="auth-card">
-            <!-- 4. Interactive Toggle -->
-            <div class="auth-toggle">
-                <button class="toggle-btn active" id="btn-signin">Sign In</button>
-                <button class="toggle-btn" id="btn-signup">Create Account</button>
-            </div>
-
-            <!-- 5. Form Elements -->
-            
-            <!-- Sign In Form -->
-            <form id="form-signin" class="auth-form active">
-                <div class="input-group">
-                    <input type="email" class="auth-input" placeholder="Email Address" required>
-                </div>
-                <div class="input-group">
-                    <input type="password" class="auth-input" placeholder="Password" required>
-                </div>
-                <span class="forgot-link">Forgot Password?</span>
-                <button type="submit" class="btn-auth">Enter Studio</button>
+<body data-auth-mode="login">
+    <nav class="site-nav minimal-nav"><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></nav>
+    <main class="auth-page">
+        <section class="auth-art" aria-hidden="true"><span class="auth-paint one"></span><span class="auth-paint two"></span><blockquote>“The studio is quieter when shared with people who care.”</blockquote></section>
+        <section class="auth-panel">
+            <div class="auth-heading"><p class="eyebrow" id="auth-eyebrow">The private studio</p><h1 id="auth-title">Welcome in</h1><p id="auth-description">Sign in to see artworks, highlights, and your orders.</p></div>
+            <div class="auth-switch" role="group" aria-label="Choose authentication mode"><button class="active" type="button" data-auth-mode="login">Sign in</button><button type="button" data-auth-mode="register">Create account</button></div>
+            <form class="stacked-form" id="auth-form">
+                <div class="register-field"><label>Full name<input name="full_name" autocomplete="name"></label></div>
+                <div class="register-field"><label>Phone <span class="optional">Optional</span><input name="phone_number" type="tel" autocomplete="tel"></label></div>
+                <label>Email<input name="email" type="email" autocomplete="email" required></label>
+                <label class="auth-password-row">Password<span class="password-field"><input id="auth-password" name="password" type="password" autocomplete="current-password" required><button type="button" data-password-toggle="auth-password">Show</button></span></label>
+                <div class="register-field"><label>Confirm password<span class="password-field"><input id="auth-password-confirmation" name="password_confirmation" type="password" autocomplete="new-password"><button type="button" data-password-toggle="auth-password-confirmation">Show</button></span></label></div>
+                <div class="form-message" id="auth-message" aria-live="polite"></div>
+                <button class="button primary wide" id="auth-submit" type="submit">Sign in</button>
+                <button class="forgot-link" id="forgot-password" type="button">Forgot password?</button>
+                <button class="forgot-link recovery-back" id="back-to-login" type="button">← Back to sign in</button>
             </form>
-
-            <!-- Create Account Form -->
-            <form id="form-signup" class="auth-form">
-                <div class="input-group">
-                    <input type="text" class="auth-input" placeholder="Full Name" required>
-                </div>
-                <div class="input-group">
-                    <input type="email" class="auth-input" placeholder="Email Address" required>
-                </div>
-                <div class="input-group">
-                    <input type="tel" class="auth-input" placeholder="Phone Number" required>
-                </div>
-                <div class="input-group">
-                    <input type="password" class="auth-input" placeholder="Password" required>
-                </div>
-                <div class="input-group">
-                    <input type="password" class="auth-input" placeholder="Confirm Password" required>
-                </div>
-                <button type="submit" class="btn-auth">Join Community</button>
-            </form>
-        </div>
+            <a class="back-link" href="index.html">← Back to the open studio</a>
+        </section>
     </main>
-
-    <!-- 6. Footer -->
-    <footer>
-        <p class="footer-text">&copy; 2026 Sanjana Rahman Nowrin. All Rights Reserved.</p>
-        <p class="developer-credit">Developed by Ovi</p>
-    </footer>
-
-    <!-- Interactive JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Mobile Menu Toggle Logic
-            const mobileBtn = document.getElementById('mobile-menu-btn');
-            const navLinks = document.getElementById('nav-links');
-
-            if (mobileBtn && navLinks) {
-                mobileBtn.addEventListener('click', () => {
-                    navLinks.classList.toggle('active');
-                });
-            }
-
-            // Auth Toggle Logic
-            const btnSignIn = document.getElementById('btn-signin');
-            const btnSignUp = document.getElementById('btn-signup');
-            const formSignIn = document.getElementById('form-signin');
-            const formSignUp = document.getElementById('form-signup');
-
-            if (btnSignIn && btnSignUp && formSignIn && formSignUp) {
-                btnSignIn.addEventListener('click', () => {
-                    btnSignIn.classList.add('active');
-                    btnSignUp.classList.remove('active');
-                    formSignIn.classList.add('active');
-                    formSignUp.classList.remove('active');
-                });
-
-                btnSignUp.addEventListener('click', () => {
-                    btnSignUp.classList.add('active');
-                    btnSignIn.classList.remove('active');
-                    formSignUp.classList.add('active');
-                    formSignIn.classList.remove('active');
-                });
-            }
-
-            // Prevent default submission for testing (would connect to Supabase later)
-            if(formSignIn) {
-                formSignIn.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    console.log('Sign In logic would run here');
-                });
-            }
-
-            if(formSignUp) {
-                formSignUp.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    console.log('Sign Up logic would run here');
-                });
-            }
-        });
-    </script>
+    <footer class="auth-footer"><a href="https://www.instagram.com/painting_with_passion_._/" target="_blank" rel="noreferrer">Instagram</a><span>Developed by Rahman Ovi</span></footer>
 </body>
 </html>

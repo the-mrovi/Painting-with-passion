@@ -1,153 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="auth-pending">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finding Light in the Shadows | Painting with passion</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
-    <!-- Base Stylesheet (Nav, Footer, Reset) -->
-    <link rel="stylesheet" href="style.css">
-    
-    <link rel="stylesheet" href="post.css">
-    <script src="theme.js" defer></script>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thought | Painting with passion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="post.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="post.js" defer></script>
 </head>
 <body>
-
-    <!-- 1. Navigation Bar -->
-    <nav class="navbar">
-        <a href="index.html" class="logo">Painting with passion</a>
-        <div class="menu-toggle" id="mobile-menu-btn">☰</div>
-        <ul class="nav-links" id="nav-links">
-            <li><a href="gallery.html">Gallery</a></li>
-            <li><a href="thoughts.html" class="active">Thoughts</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="checkout.html">Inquiry Cart (0)</a></li>
-        </ul>
-    </nav>
-
-    <!-- 2. Article Header -->
-    <header class="article-header">
-        <h1 class="article-title">Finding Light in the Shadows</h1>
-        <div class="article-meta">
-            By <span>Sanjana Rahman Nowrin</span> &bull; June 18, 2026
-        </div>
-    </header>
-
-    <!-- 3. Reading Layout -->
-    <main class="reading-layout">
-        <p>The creative process is rarely linear. This past month in the studio has been an exploration of contrast—not just in the pigments I mix, but in the quiet moments between the brushstrokes. Embracing the darker tones has allowed the vibrant colors to truly breathe and take on a life of their own. Sometimes you have to dive deep into the shadows to understand the brilliant nature of light.</p>
-        
-        <p>When I started this new series, I was hesitant. The blank canvas is always intimidating, but choosing to prime it with a deep, charcoal wash felt like a definitive commitment to the unknown. As the first layers of crimson and gold touched the surface, I realized that the dark background was not swallowing the color, but rather giving it a stage to perform.</p>
-
-        <div class="inline-image-placeholder">
-            [ Artwork Image Placeholder: "Midnight Serenade" ]
-        </div>
-        <div class="image-caption">Midnight Serenade - Oil on Canvas</div>
-
-        <p>This interplay between the unseen and the seen has become a central theme in my work. It mirrors the human experience—how our quietest, most hidden moments often inform the brightest parts of our lives. I encourage you to look closely at the edges where the light meets the dark; that is where the real story is told.</p>
-        
-        <p>Thank you for joining me on this journey. I look forward to sharing more updates as these pieces come closer to their final form. Until then, keep looking for the light.</p>
+    <nav class="site-nav" aria-label="Main navigation"><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-label="Open menu"><span></span><span></span></button><div class="nav-links" data-nav-links><a href="gallery.html" data-protected-link>Gallery</a><a href="highlights.html" data-protected-link>Highlights</a><a class="active" href="thoughts.html">Thoughts</a><a class="cart-link" href="checkout.html" data-protected-link>Cart <span data-cart-count>0</span></a><div data-account-slot></div><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div></nav>
+    <main class="post-page">
+        <article class="thought-article loading-block" id="thought-article"></article>
+        <section class="conversation" aria-labelledby="conversation-title"><header><div><p class="eyebrow">Conversation</p><h2 id="conversation-title">Leave a thought</h2></div><button class="icon-button like-button" id="thought-like" aria-label="Like this thought"></button></header><form class="comment-form" id="comment-form"><label for="comment-content">Your comment</label><textarea id="comment-content" maxlength="2000" placeholder="Write something thoughtful…" required></textarea><button class="button primary" type="submit">Post comment</button></form><div class="comment-list" id="comment-list"></div></section>
     </main>
-
-    <!-- 4. Comment Section -->
-    <section class="comment-section">
-        <h2 class="comment-section-title">Join the Conversation</h2>
-        
-        <div class="comment-input-area">
-            <p class="login-note">Please log in to share your thoughts.</p>
-            <textarea class="comment-textarea" id="comment-textarea" placeholder="What are your thoughts on this piece?"></textarea>
-            <button class="btn-post" id="btn-post-comment">Post Comment</button>
-        </div>
-
-        <div class="comment-list" id="comment-list">
-            <!-- Example Comment 1 -->
-            <div class="comment-item">
-                <div class="comment-author">Elena Rostova</div>
-                <div class="comment-date">June 19, 2026</div>
-                <div class="comment-text">This is so profound. The way you describe the charcoal wash giving a stage to the brighter colors really changed how I view your recent pieces!</div>
-            </div>
-            
-            <!-- Example Comment 2 -->
-            <div class="comment-item">
-                <div class="comment-author">Marcus Vance</div>
-                <div class="comment-date">June 20, 2026</div>
-                <div class="comment-text">Beautifully written. Looking forward to seeing "Midnight Serenade" in person at the next exhibition. Keep up the amazing work, Sanjana.</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 5. Footer -->
-    <footer>
-        <p class="footer-text">&copy; 2026 Sanjana Rahman Nowrin. All Rights Reserved.</p>
-        <p class="developer-credit">Developed by Ovi</p>
-    </footer>
-
-    <!-- Interactive JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Mobile Menu Toggle Logic
-            const mobileBtn = document.getElementById('mobile-menu-btn');
-            const navLinks = document.getElementById('nav-links');
-
-            if (mobileBtn && navLinks) {
-                mobileBtn.addEventListener('click', () => {
-                    navLinks.classList.toggle('active');
-                });
-            }
-
-            // Simple Comment Posting Simulation
-            const postBtn = document.getElementById('btn-post-comment');
-            const textarea = document.getElementById('comment-textarea');
-            const commentList = document.getElementById('comment-list');
-
-            if (postBtn && textarea && commentList) {
-                postBtn.addEventListener('click', () => {
-                    const text = textarea.value.trim();
-                    if (text === '') return;
-
-                    // Note: In a real environment, this connects to the Supabase backend.
-                    // For now, we simulate adding the comment to the DOM.
-
-                    const dateStr = new Date().toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-
-                    // Construct new comment HTML
-                    const newCommentHTML = `
-                        <div class="comment-item">
-                            <div class="comment-author">Guest User</div>
-                            <div class="comment-date">${dateStr}</div>
-                            <div class="comment-text">${escapeHTML(text)}</div>
-                        </div>
-                    `;
-
-                    // Insert at the top of the comment thread
-                    commentList.insertAdjacentHTML('afterbegin', newCommentHTML);
-                    
-                    // Clear textarea
-                    textarea.value = '';
-                });
-            }
-
-            // Utility function to escape HTML (prevents XSS in simulation)
-            function escapeHTML(str) {
-                return str.replace(/[&<>'"]/g, 
-                    tag => ({
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        "'": '&#39;',
-                        '"': '&quot;'
-                    }[tag])
-                );
-            }
-        });
-    </script>
+    <footer class="site-footer"><div><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><p>Paintings and notes by Sanjana Rahman Nowrin.</p></div><div><a href="thoughts.html">Thoughts</a><a href="https://www.instagram.com/painting_with_passion_._/" target="_blank" rel="noreferrer">Instagram</a></div><p>© 2026 · Developed by Rahman Ovi</p></footer>
 </body>
 </html>
