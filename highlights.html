@@ -1,25 +1,135 @@
 <!doctype html>
 <html lang="en" class="auth-pending">
 <head>
-    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Studio highlights | Painting with passion</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
-    <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="highlights.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="highlights.js" defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Curated studio highlights from Painting with passion.">
+    <title>Highlights | Painting with passion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <script src="theme.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="highlights.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js" defer></script>
+    <script src="highlights.js" defer></script>
 </head>
 <body data-access="member" class="highlights-body">
-    <nav class="site-nav" aria-label="Main navigation"><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-label="Open menu"><span></span><span></span></button><div class="nav-links" data-nav-links><a href="gallery.html">Gallery</a><a class="active" href="highlights.html">Highlights</a><a href="thoughts.html">Thoughts</a><a class="cart-link" href="checkout.html">Cart <span data-cart-count>0</span></a><div data-account-slot></div><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div></nav>
+    <a class="highlights-skip-link" href="#category-stage">Skip to highlight categories</a>
+
+    <nav class="site-nav highlights-nav" aria-label="Main navigation">
+        <a class="wordmark highlights-wordmark" href="index.html">
+            <span>Painting</span> with passion
+        </a>
+        <button class="menu-toggle highlights-menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="highlights-nav-links" aria-label="Open menu">
+            <span></span><span></span>
+        </button>
+        <div class="nav-links highlights-nav-links" id="highlights-nav-links" data-nav-links>
+            <div class="highlights-nav-primary">
+                <a href="gallery.html">Gallery</a>
+                <a class="active" href="highlights.html" aria-current="page">Highlights</a>
+                <a href="thoughts.html">Thoughts</a>
+                <a href="profile.html">Profile</a>
+                <a class="cart-link" href="checkout.html">Cart <span data-cart-count>0</span></a>
+            </div>
+            <div class="highlights-nav-tools">
+                <div class="highlights-account-slot" data-account-slot></div>
+                <button class="theme-toggle" type="button" data-theme-toggle>Dark</button>
+            </div>
+        </div>
+    </nav>
+
     <main class="highlights-page">
-        <header class="page-intro highlights-intro"><p class="eyebrow">Studio stories</p><h1>Highlights</h1><p>Small windows into works in progress, exhibitions, colour studies, and everyday life around the studio.</p></header>
-        <section class="highlight-library" aria-labelledby="highlight-library-title">
-            <div class="highlight-library-heading"><div><p class="eyebrow">Browse the archive</p><h2 id="highlight-library-title">Choose a collection</h2></div><p>Each circle opens a curated set of images, short videos, and notes.</p></div>
-            <nav class="highlight-categories" id="highlight-categories" aria-label="Highlight categories"></nav>
-        </section>
-        <section class="highlight-feature" aria-labelledby="active-highlight-title">
-            <header class="highlight-feature-heading"><div><p class="eyebrow" id="active-highlight-label">Now viewing</p><h2 id="active-highlight-title">Studio highlights</h2></div><p id="active-highlight-count"></p></header>
-            <div class="highlight-viewer-shell"><section class="highlight-viewer loading-block" id="highlight-viewer" aria-live="polite"></section></div>
+        <header class="highlights-masthead">
+            <div>
+                <p class="highlights-kicker">Selected moments</p>
+                <h1>Highlights</h1>
+            </div>
+            <div class="highlights-admin-toolbar" id="highlights-admin-toolbar" hidden></div>
+        </header>
+
+        <section class="category-exhibition" id="category-carousel" aria-labelledby="highlights-heading">
+            <h2 class="highlights-visually-hidden" id="highlights-heading">Highlight categories</h2>
+            <div class="category-stage" id="category-stage" role="region" aria-roledescription="carousel" aria-label="Highlight categories" aria-describedby="category-gesture-hint" tabindex="0">
+                <div class="category-track" id="highlight-categories">
+                    <div class="highlights-loading" id="highlights-loading" role="status">
+                        <span aria-hidden="true"></span>
+                        <p>Gathering studio moments</p>
+                    </div>
+                </div>
+
+                <div class="category-controls" id="category-controls" hidden>
+                    <button type="button" class="category-control previous" id="category-previous" aria-label="Previous highlight category">
+                        <span aria-hidden="true">←</span><span>Previous</span>
+                    </button>
+                    <button type="button" class="category-control next" id="category-next" aria-label="Next highlight category">
+                        <span>Next</span><span aria-hidden="true">→</span>
+                    </button>
+                </div>
+
+                <p class="category-gesture-hint" id="category-gesture-hint">Scroll or swipe to explore · Select the centre circle to open</p>
+                <p class="highlights-visually-hidden" id="category-live-status" aria-live="polite" aria-atomic="true"></p>
+            </div>
         </section>
     </main>
-    <footer class="site-footer"><div><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><p>Paintings and notes by Sanjana Rahman Nowrin.</p></div><div><a href="thoughts.html">Thoughts</a><a href="https://www.instagram.com/painting_with_passion_._/" target="_blank" rel="noreferrer">Instagram</a></div><p>© 2026 · Developed by Rahman Ovi</p></footer>
+
+    <dialog class="highlight-viewer-dialog" id="highlight-viewer-dialog" aria-labelledby="viewer-category-name">
+        <div class="highlight-viewer-shell">
+            <div class="viewer-progress" id="viewer-progress" aria-hidden="true"></div>
+
+            <header class="viewer-header">
+                <div class="viewer-identity">
+                    <p>Highlight collection</p>
+                    <h2 id="viewer-category-name">Highlights</h2>
+                </div>
+                <div class="viewer-header-tools">
+                    <p class="viewer-count" id="viewer-count"></p>
+                    <div id="viewer-admin-menu"></div>
+                    <button class="viewer-close" id="viewer-close" type="button" aria-label="Close highlight viewer">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="viewer-stage" id="viewer-stage">
+                <div class="viewer-media-slot" id="viewer-media-slot" aria-busy="false"></div>
+                <button class="viewer-tap-zone previous" id="viewer-previous" type="button" aria-label="Previous highlight">
+                    <span aria-hidden="true">←</span>
+                </button>
+                <button class="viewer-tap-zone next" id="viewer-next" type="button" aria-label="Next highlight">
+                    <span aria-hidden="true">→</span>
+                </button>
+            </div>
+
+            <footer class="viewer-footer">
+                <p class="viewer-caption" id="viewer-caption" tabindex="0" aria-label="Highlight caption"></p>
+                <div class="viewer-footer-tools">
+                    <button class="viewer-playback" id="viewer-playback" type="button" aria-label="Pause highlight" hidden>
+                        <span aria-hidden="true">Ⅱ</span><span class="viewer-playback-label">Pause</span>
+                    </button>
+                    <button class="viewer-like icon-button like-button" id="viewer-like" type="button" aria-label="Like this highlight" hidden></button>
+                </div>
+            </footer>
+
+            <p class="highlights-visually-hidden" id="viewer-live-status" aria-live="polite" aria-atomic="true"></p>
+        </div>
+    </dialog>
+
+    <dialog class="category-editor-dialog" id="category-editor-dialog" aria-labelledby="category-editor-title">
+        <form class="category-editor-form" id="category-editor-form">
+            <button class="category-editor-close" id="category-editor-close" type="button" aria-label="Close category editor">×</button>
+            <p class="highlights-kicker" id="category-editor-kicker">New collection</p>
+            <h2 id="category-editor-title">Create category</h2>
+            <label for="category-name-input">Category name</label>
+            <input id="category-name-input" name="name" type="text" maxlength="60" autocomplete="off" required>
+            <p class="category-editor-message" id="category-editor-message" role="status"></p>
+            <div class="category-editor-actions">
+                <button type="button" class="category-editor-cancel" id="category-editor-cancel">Cancel</button>
+                <button type="submit" class="category-editor-submit" id="category-editor-submit">Create category</button>
+            </div>
+        </form>
+    </dialog>
 </body>
 </html>
