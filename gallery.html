@@ -2,22 +2,47 @@
 <html lang="en" class="auth-pending">
 <head>
     <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>The collection | Painting with passion</title>
+    <title>Gallery | Painting with passion</title>
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
     <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="gallery.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="gallery.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="media-upload.js" defer></script><script src="gallery.js" defer></script>
 </head>
 <body data-access="member">
     <nav class="site-nav" aria-label="Main navigation">
-        <a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-label="Open menu"><span></span><span></span></button>
-        <div class="nav-links" data-nav-links><a class="active" href="gallery.html">Gallery</a><a href="highlights.html">Highlights</a><a href="thoughts.html">Thoughts</a><a class="cart-link" href="checkout.html">Cart <span data-cart-count>0</span></a><div data-account-slot></div><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
+        <a class="wordmark" href="index.html"><span>Painting</span> with passion</a>
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav-links" aria-label="Open menu"><span></span><span></span></button>
+        <div class="nav-links" id="site-nav-links" data-nav-links>
+            <div class="nav-primary"><a href="index.html">Home</a><a href="index.html#about">About</a><a class="active" href="gallery.html" aria-current="page">Gallery</a><a href="highlights.html">Highlights</a><a href="thoughts.html">Thoughts</a><a href="profile.html">Profile</a><a class="cart-link" href="checkout.html" hidden>Cart <span data-cart-count>0</span></a></div>
+            <div class="nav-tools"><div class="nav-account-slot" data-account-slot><a class="nav-account-link" href="login.html">Sign in</a></div><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
+        </div>
     </nav>
     <main class="collection-page">
-        <header class="page-intro"><p class="eyebrow">Original work</p><h1>The collection</h1><p>A living catalogue of finished pieces and paintings still looking for a home.</p></header>
+        <header class="page-intro"><p class="eyebrow">Original work</p><h1 class="site-page-title portfolio-section-title">Gallery</h1><p>A living catalogue of finished pieces and paintings still looking for a home.</p></header>
         <div class="filter-row" id="gallery-filters" aria-label="Filter artwork"><button class="filter-chip active" data-filter="all">All</button><button class="filter-chip" data-filter="available">Available</button><button class="filter-chip" data-filter="collected">Collected</button></div>
         <section class="gallery-grid loading-block" id="gallery-grid" aria-live="polite"></section>
     </main>
+    <dialog class="creation-dialog" id="artwork-create-dialog" aria-labelledby="artwork-create-title" hidden>
+        <form class="creation-dialog-form admin-form" id="artwork-create-form">
+            <button class="creation-dialog-close" type="button" data-close-artwork-dialog aria-label="Close artwork editor">×</button>
+            <header class="creation-dialog-header"><p class="eyebrow">From the Gallery</p><h2 id="artwork-create-title">Add artwork</h2><p>Publish a finished painting without leaving the collection.</p></header>
+            <div class="media-upload" data-media-upload>
+                <div class="media-upload-dropzone" data-media-dropzone>
+                    <input class="media-upload-input" name="image" type="file" accept="image/jpeg,image/png,image/webp">
+                    <button class="media-upload-empty" type="button" data-media-empty data-media-select><span class="media-upload-mark" aria-hidden="true">+</span><strong>Add artwork image</strong><span>Click or drag an image here</span><small>JPEG, PNG, or WebP · up to 15MB</small></button>
+                    <span class="media-upload-preview" data-media-preview hidden><span class="media-upload-preview-frame" data-media-preview-slot></span><span class="media-upload-preview-details"><span class="media-upload-file-name" data-media-file-name></span><span class="media-upload-actions"><button type="button" data-media-change>Change image</button><button type="button" data-media-remove>Remove</button></span></span></span>
+                </div>
+            </div>
+            <label>Artwork name<input name="title" required maxlength="180"></label>
+            <label>Short caption<input name="caption" maxlength="240" placeholder="A single line shown near the title"></label>
+            <div class="form-pair"><label>Medium<input name="medium" placeholder="Oil on canvas"></label><label>Dimensions<input name="dimensions" placeholder="24 × 36 in"></label></div>
+            <div class="form-pair"><label>Price<input name="price" type="number" min="0" step="0.01" placeholder="Leave empty for price on request"></label><label>Currency<select name="currency"><option>BDT</option><option>USD</option></select></label></div>
+            <label>About the piece<textarea name="description" rows="6" placeholder="Story, materials, and details"></textarea></label>
+            <div class="check-row"><label><input name="is_available" type="checkbox" checked> Available to order</label><label><input name="published" type="checkbox" checked> Published</label></div>
+            <p class="creation-dialog-message" id="artwork-create-message" role="status"></p>
+            <div class="creation-dialog-actions"><button class="button quiet" type="button" data-close-artwork-dialog>Cancel</button><button class="button primary" type="submit">Publish artwork</button></div>
+        </form>
+    </dialog>
     <footer class="site-footer"><div><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><p>Paintings and notes by Sanjana Rahman Nowrin.</p></div><div><a href="thoughts.html">Thoughts</a><a href="https://www.instagram.com/painting_with_passion_._/" target="_blank" rel="noreferrer">Instagram</a></div><p>© 2026 · Developed by Rahman Ovi</p></footer>
 </body>
 </html>

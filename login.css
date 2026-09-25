@@ -1,4 +1,4 @@
-.minimal-nav { position: absolute; background: transparent; border: 0; }.minimal-nav .theme-toggle { margin-left: auto; }
+.minimal-nav { position: absolute; grid-template-columns: 1fr auto; background: transparent; border: 0; }.minimal-nav .theme-toggle { grid-column: 2; margin-left: auto; }
 .auth-page { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
 .auth-art { min-height: 100vh; padding: 8vw; position: relative; overflow: hidden; display: flex; align-items: end; background: #6e5962; color: #fff; isolation: isolate; }
 .auth-art::before { content: ""; position: absolute; inset: 0; z-index: -2; background: linear-gradient(145deg, #5b6870 0 40%, #b57769 40% 66%, #c5a985 66%); }

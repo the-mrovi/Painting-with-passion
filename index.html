@@ -11,38 +11,86 @@
     <script src="theme.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="home.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
-    <script src="supabase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4" defer></script>
+    <script src="supabase-config.js" defer></script>
     <script src="app.js" defer></script>
     <script src="home.js" defer></script>
 </head>
 <body class="home-body">
-    <a class="home-skip-link" href="#home-exhibition">Skip to the exhibition</a>
+    <a class="home-skip-link" href="#about">Skip to the introduction</a>
 
-    <nav class="site-nav home-nav" aria-label="Main navigation">
-        <a class="wordmark home-wordmark" href="index.html" aria-current="page">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a class="wordmark" href="index.html">
             <span>Painting</span> with passion
         </a>
-        <button class="menu-toggle home-menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="home-nav-links" aria-label="Open menu">
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav-links" aria-label="Open menu">
             <span></span><span></span>
         </button>
-        <div class="nav-links home-nav-links" id="home-nav-links" data-nav-links>
-            <div class="home-nav-primary">
+        <div class="nav-links" id="site-nav-links" data-nav-links>
+            <div class="nav-primary">
+                <a href="#home-exhibition" data-home-showcase-link>Home</a>
+                <a class="active" href="#about" data-home-about-link aria-current="page">About</a>
                 <a href="gallery.html" data-protected-link>Gallery</a>
                 <a href="highlights.html" data-protected-link>Highlights</a>
                 <a href="thoughts.html">Thoughts</a>
                 <a href="profile.html" data-protected-link>Profile</a>
-                <a class="cart-link" href="checkout.html" data-protected-link>Cart <span data-cart-count>0</span></a>
+                <a class="cart-link" href="checkout.html" data-protected-link hidden>Cart <span data-cart-count>0</span></a>
             </div>
-            <div class="home-nav-tools">
-                <div class="home-account-slot" data-account-slot><a href="login.html">Sign in</a></div>
+            <div class="nav-tools">
+                <div class="nav-account-slot" data-account-slot><a class="nav-account-link" href="login.html">Sign in</a></div>
                 <button class="theme-toggle" type="button" data-theme-toggle>Dark</button>
             </div>
         </div>
     </nav>
 
-    <main id="home-exhibition" class="home-exhibition" tabindex="-1">
-        <h1 class="home-visually-hidden">An interactive exhibition of paintings by Sanjana Rahman Nowrin</h1>
+    <main class="home-page">
+        <div class="home-intro-sequence" id="home-intro-sequence" data-intro-sequence>
+        <div class="home-intro-sticky">
+        <div class="home-intro-gallery" data-intro-gallery aria-hidden="true">
+            <figure class="home-intro-art"><img src="img/intro-01.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-02.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-03.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-04.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-05.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-06.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-07.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-08.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-09.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-10.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-11.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-12.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-13.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-14.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-15.jpg" alt="" decoding="async"></figure>
+            <figure class="home-intro-art"><img src="img/intro-16.jpg" alt="" decoding="async"></figure>
+        </div>
+
+        <section class="home-about" id="about" aria-labelledby="about-title" tabindex="-1">
+            <div class="home-about-inner" data-about-content>
+                <h1 class="home-about-reveal" id="about-title" data-about-step>Hi, I’m <strong>Sanjana Rahman Nowrin</strong>.</h1>
+
+                <div class="home-about-copy">
+                    <p class="home-about-reveal" data-about-step>Painting is something I truly love. It gives me a way to express feelings, ideas, and little moments that are sometimes difficult to put into words. I also love sharing my thoughts, experiences, and the things that inspire me.</p>
+
+                    <p class="home-about-reveal" data-about-step>This website is my little space where I share my <strong>artwork, thoughts, and highlights</strong> with you. You can explore my paintings, read my thoughts, and leave a like or comment if something connects with you.</p>
+
+                    <p class="home-about-reveal" data-about-step>If you love any of my artwork, you can place an order. And if you have something special in mind, feel free to share your idea with me. I’ll be happy to understand your request and try my best to create something meaningful for you, <strong>In Sha Allah.</strong></p>
+
+                    <p class="home-about-reveal" data-about-step>You can also reach me on Instagram through <strong>Painting with Passion</strong>. Feel free to message me there for orders, custom requests, questions, or just to talk about my work.</p>
+
+                    <p class="home-about-instagram home-about-reveal" data-about-step><strong>Instagram:</strong> <a href="https://www.instagram.com/painting_with_passion_._?stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer">Painting with Passion <span aria-hidden="true">↗</span></a></p>
+
+                    <p class="home-about-reveal" data-about-step>Thank you for being here and becoming a small part of my creative journey.</p>
+                </div>
+
+                <a class="home-about-continue home-about-reveal" href="#home-exhibition" data-about-step>
+                    <span>Continue to the paintings</span><span aria-hidden="true">↓</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="home-exhibition" class="home-exhibition" tabindex="-1">
+            <h2 class="home-visually-hidden">An interactive exhibition of paintings by Sanjana Rahman Nowrin</h2>
 
         <section class="exhibition-shell" aria-labelledby="artwork-title">
             <aside class="exhibition-info" aria-live="off">
@@ -94,7 +142,10 @@
             </div>
         </section>
 
-        <p class="exhibition-credit">Original works · Sanjana Rahman Nowrin</p>
+            <p class="exhibition-credit">Original works · Sanjana Rahman Nowrin</p>
+        </section>
+        </div>
+        </div>
     </main>
 </body>
 </html>

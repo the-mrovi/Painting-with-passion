@@ -5,7 +5,7 @@
     <title>Admin studio | Painting with passion</title>
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
     <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="admin.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="media-upload.js" defer></script><script src="admin.js" defer></script>
 </head>
 <body data-access="admin" class="admin-body">
     <header class="admin-mobile-header"><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button type="button" data-admin-nav-toggle aria-controls="admin-sidebar" aria-expanded="false"><span></span><span></span><span></span><span class="sr-only">Open Admin Studio menu</span></button></header>
@@ -35,7 +35,13 @@
         <section class="admin-panel" data-admin-panel="artwork">
             <header class="admin-heading"><div><p class="eyebrow">The collection</p><h1>Publish artwork</h1><p>Add a finished painting with clear purchasing details.</p></div></header>
             <form class="admin-form" id="artwork-form">
-                <label class="file-field"><span>Artwork image</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required><small>JPEG, PNG, or WebP · up to 15MB</small></label>
+                <div class="media-upload" data-media-upload>
+                    <div class="media-upload-dropzone" data-media-dropzone>
+                        <input class="media-upload-input" name="image" type="file" accept="image/jpeg,image/png,image/webp">
+                        <button class="media-upload-empty" type="button" data-media-empty data-media-select><span class="media-upload-mark" aria-hidden="true">+</span><strong>Add artwork image</strong><span>Click or drag an image here</span><small>JPEG, PNG, or WebP · up to 15MB</small></button>
+                        <span class="media-upload-preview" data-media-preview hidden><span class="media-upload-preview-frame" data-media-preview-slot></span><span class="media-upload-preview-details"><span class="media-upload-file-name" data-media-file-name></span><span class="media-upload-actions"><button type="button" data-media-change>Change image</button><button type="button" data-media-remove>Remove</button></span></span></span>
+                    </div>
+                </div>
                 <label>Artwork name<input name="title" required maxlength="180"></label>
                 <label>Short caption<input name="caption" maxlength="240" placeholder="A single line shown near the title"></label>
                 <div class="form-pair"><label>Medium<input name="medium" placeholder="Oil on canvas"></label><label>Dimensions<input name="dimensions" placeholder="24 × 36 in"></label></div>
@@ -57,7 +63,7 @@
         <section class="admin-panel" data-admin-panel="highlight">
             <header class="admin-heading"><div><p class="eyebrow">Studio stories</p><h1>Highlights</h1><p>Share a short image or video inside an organised highlight.</p></div></header>
             <div class="admin-split">
-                <form class="admin-form" id="highlight-form"><label class="file-field"><span>Image or video</span><input name="media" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" required><small>Images or short MP4/WebM video · up to 50MB</small></label><label>Category<select name="category_id" data-highlight-category-select required></select></label><label>Caption<textarea name="caption" rows="5" maxlength="900" placeholder="Maximum 100 words"></textarea><small id="highlight-word-count">0/100 words</small></label><label class="check-label"><input name="published" type="checkbox" checked> Published</label><button class="button primary" type="submit">Share highlight</button></form>
+                <form class="admin-form" id="highlight-form"><div class="media-upload" data-media-upload><div class="media-upload-dropzone" data-media-dropzone><input class="media-upload-input" name="media" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"><button class="media-upload-empty" type="button" data-media-empty data-media-select><span class="media-upload-mark" aria-hidden="true">+</span><strong>Add image or video</strong><span>Click or drag media here</span><small>JPEG, PNG, WebP, MP4, or WebM · up to 50MB</small></button><span class="media-upload-preview" data-media-preview hidden><span class="media-upload-preview-frame" data-media-preview-slot></span><span class="media-upload-preview-details"><span class="media-upload-file-name" data-media-file-name></span><span class="media-upload-actions"><button type="button" data-media-change>Change media</button><button type="button" data-media-remove>Remove</button></span></span></span></div></div><label>Category<select name="category_id" data-highlight-category-select required></select></label><label>Caption<textarea name="caption" rows="5" maxlength="900" placeholder="Maximum 100 words"></textarea><small id="highlight-word-count">0/100 words</small></label><label class="check-label"><input name="published" type="checkbox" checked> Published</label><button class="button primary" type="submit">Share highlight</button></form>
                 <aside class="category-manager"><p class="eyebrow">Organisation</p><h2>Highlight categories</h2><p>Create categories such as “In studio” or “Exhibitions”, then sort them.</p><form data-category-form="highlight"><input aria-label="New highlight category" placeholder="New category" maxlength="60" required><button type="submit">Add</button></form><div id="highlight-category-list"></div></aside>
             </div>
         </section>

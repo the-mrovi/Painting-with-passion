@@ -14,28 +14,31 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
     <script src="supabase-config.js"></script>
     <script src="app.js" defer></script>
+    <script src="media-upload.js" defer></script>
     <script src="highlights.js" defer></script>
 </head>
 <body data-access="member" class="highlights-body">
     <a class="highlights-skip-link" href="#category-stage">Skip to highlight categories</a>
 
-    <nav class="site-nav highlights-nav" aria-label="Main navigation">
-        <a class="wordmark highlights-wordmark" href="index.html">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a class="wordmark" href="index.html">
             <span>Painting</span> with passion
         </a>
-        <button class="menu-toggle highlights-menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="highlights-nav-links" aria-label="Open menu">
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav-links" aria-label="Open menu">
             <span></span><span></span>
         </button>
-        <div class="nav-links highlights-nav-links" id="highlights-nav-links" data-nav-links>
-            <div class="highlights-nav-primary">
+        <div class="nav-links" id="site-nav-links" data-nav-links>
+            <div class="nav-primary">
+                <a href="index.html">Home</a>
+                <a href="index.html#about">About</a>
                 <a href="gallery.html">Gallery</a>
                 <a class="active" href="highlights.html" aria-current="page">Highlights</a>
                 <a href="thoughts.html">Thoughts</a>
                 <a href="profile.html">Profile</a>
-                <a class="cart-link" href="checkout.html">Cart <span data-cart-count>0</span></a>
+                <a class="cart-link" href="checkout.html" hidden>Cart <span data-cart-count>0</span></a>
             </div>
-            <div class="highlights-nav-tools">
-                <div class="highlights-account-slot" data-account-slot></div>
+            <div class="nav-tools">
+                <div class="nav-account-slot" data-account-slot><a class="nav-account-link" href="login.html">Sign in</a></div>
                 <button class="theme-toggle" type="button" data-theme-toggle>Dark</button>
             </div>
         </div>
@@ -45,7 +48,7 @@
         <header class="highlights-masthead">
             <div>
                 <p class="highlights-kicker">Selected moments</p>
-                <h1>Highlights</h1>
+                <h1 class="site-page-title portfolio-section-title">Highlights</h1>
             </div>
             <div class="highlights-admin-toolbar" id="highlights-admin-toolbar" hidden></div>
         </header>
@@ -129,6 +132,26 @@
                 <button type="button" class="category-editor-cancel" id="category-editor-cancel">Cancel</button>
                 <button type="submit" class="category-editor-submit" id="category-editor-submit">Create category</button>
             </div>
+        </form>
+    </dialog>
+
+    <dialog class="creation-dialog highlight-create-dialog" id="highlight-create-dialog" aria-labelledby="highlight-create-title" hidden>
+        <form class="creation-dialog-form admin-form" id="highlight-create-form">
+            <button class="creation-dialog-close" type="button" data-close-highlight-dialog aria-label="Close highlight editor">×</button>
+            <header class="creation-dialog-header"><p class="eyebrow">From Highlights</p><h2 id="highlight-create-title">Add highlight</h2><p>Share one image or video in an existing collection, or begin a new one.</p></header>
+            <div class="media-upload" data-media-upload>
+                <div class="media-upload-dropzone" data-media-dropzone>
+                    <input class="media-upload-input" name="media" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm">
+                    <button class="media-upload-empty" type="button" data-media-empty data-media-select><span class="media-upload-mark" aria-hidden="true">+</span><strong>Add image or video</strong><span>Click or drag media here</span><small>JPEG, PNG, WebP, MP4, or WebM · up to 50MB</small></button>
+                    <span class="media-upload-preview" data-media-preview hidden><span class="media-upload-preview-frame" data-media-preview-slot></span><span class="media-upload-preview-details"><span class="media-upload-file-name" data-media-file-name></span><span class="media-upload-actions"><button type="button" data-media-change>Change media</button><button type="button" data-media-remove>Remove</button></span></span></span>
+                </div>
+            </div>
+            <label>Category<select name="category_id" id="highlight-create-category" required></select></label>
+            <label data-custom-highlight-category hidden>New category name<input name="custom_category" maxlength="60" autocomplete="off"></label>
+            <label>Caption<textarea name="caption" rows="5" maxlength="900" placeholder="Maximum 100 words"></textarea><small id="highlight-create-word-count">0/100 words</small></label>
+            <label class="check-label"><input name="published" type="checkbox" checked> Published</label>
+            <p class="creation-dialog-message" id="highlight-create-message" role="status"></p>
+            <div class="creation-dialog-actions"><button class="button quiet" type="button" data-close-highlight-dialog>Cancel</button><button class="button primary" type="submit">Share highlight</button></div>
         </form>
     </dialog>
 </body>

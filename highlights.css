@@ -84,151 +84,6 @@
     transform: translateY(0);
 }
 
-/* Page-specific navigation mirrors the editorial home composition. */
-.highlights-body .highlights-nav {
-    width: 100%;
-    height: 68px;
-    padding: 0 clamp(18px, 2.6vw, 42px);
-    position: fixed;
-    z-index: 60;
-    top: 0;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    border: 0;
-    background: transparent;
-    backdrop-filter: none;
-}
-
-.highlights-body .highlights-wordmark {
-    position: relative;
-    z-index: 2;
-    justify-self: start;
-    gap: 4px;
-    color: var(--highlights-ink);
-    font-size: 1.06rem;
-}
-
-.highlights-body .highlights-nav-links {
-    display: contents;
-}
-
-.highlights-body .highlights-nav-primary {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: flex;
-    align-items: center;
-    gap: clamp(21px, 2.35vw, 38px);
-    transform: translate(-50%, -50%);
-}
-
-.highlights-body .highlights-nav-primary > a,
-.highlights-body .highlights-account-slot > a {
-    position: relative;
-    color: var(--highlights-ink);
-    font-size: .68rem;
-    font-weight: 500;
-    letter-spacing: .105em;
-    line-height: 1;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.highlights-body .highlights-nav-primary > a::after,
-.highlights-body .highlights-account-slot > a::after {
-    content: "";
-    width: 3px;
-    height: 3px;
-    position: absolute;
-    left: 50%;
-    bottom: -9px;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: 0;
-    transform: translate(-50%, 4px);
-    transition: opacity .22s ease, transform .32s var(--highlights-ease);
-}
-
-.highlights-body .highlights-nav-primary > a:hover::after,
-.highlights-body .highlights-nav-primary > a:focus-visible::after,
-.highlights-body .highlights-nav-primary > a.active::after,
-.highlights-body .highlights-account-slot > a:hover::after,
-.highlights-body .highlights-account-slot > a:focus-visible::after {
-    opacity: 1;
-    transform: translate(-50%, 0);
-}
-
-.highlights-body .cart-link[hidden] {
-    display: none !important;
-}
-
-.highlights-body .cart-link span {
-    min-width: 0;
-    height: auto;
-    border: 0;
-    border-radius: 0;
-    font-size: .62rem;
-    transform: translateY(-.35em);
-}
-
-.highlights-body .highlights-nav-tools {
-    z-index: 2;
-    grid-column: 2;
-    justify-self: end;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-.highlights-body .highlights-account-slot {
-    min-width: 56px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.highlights-body .account-trigger {
-    width: auto;
-    padding: 0;
-    color: var(--highlights-ink);
-}
-
-.highlights-body .account-initial {
-    width: 27px;
-    height: 27px;
-    border: 1px solid var(--highlights-line);
-    background: transparent;
-    color: var(--highlights-ink);
-    font-size: .78rem;
-}
-
-.highlights-body .account-name {
-    max-width: 92px;
-    font-size: .67rem;
-    letter-spacing: .02em;
-}
-
-.highlights-body .account-menu {
-    width: 180px;
-    margin-bottom: 0;
-    position: absolute;
-    top: calc(100% + 14px);
-    border-color: var(--highlights-line-soft);
-    box-shadow: 0 18px 45px rgba(35, 30, 22, .1);
-}
-
-.highlights-body .theme-toggle {
-    width: auto;
-    padding: 8px 0;
-    color: var(--highlights-muted);
-    font-size: .59rem;
-    letter-spacing: .15em;
-}
-
-.highlights-body .highlights-menu-toggle {
-    display: none;
-}
-
 .highlights-page,
 .category-exhibition,
 .category-stage {
@@ -244,16 +99,17 @@
 }
 
 .highlights-masthead {
-    width: calc(100% - clamp(40px, 5.2vw, 84px));
+    width: var(--page);
     position: absolute;
     z-index: 14;
-    top: clamp(96px, 13vh, 132px);
-    left: clamp(20px, 2.6vw, 42px);
+    top: calc(var(--nav-height) + 90px);
+    left: 50%;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 28px;
     pointer-events: none;
+    transform: translateX(-50%);
 }
 
 .highlights-kicker,
@@ -270,15 +126,21 @@
 }
 
 .highlights-masthead .highlights-kicker {
-    margin-bottom: 8px;
+    margin-bottom: 14px;
 }
 
 .highlights-masthead h1 {
     margin: 0;
-    font-size: clamp(3.9rem, 7vw, 7.2rem);
+    font-size: var(--page-title-size);
     font-weight: 400;
-    letter-spacing: -.06em;
-    line-height: .84;
+    letter-spacing: -.055em;
+    line-height: .9;
+}
+
+.highlights-masthead h1.portfolio-section-title {
+    font-size: var(--portfolio-title-size);
+    letter-spacing: -.035em;
+    line-height: 1;
 }
 
 .highlights-admin-toolbar {
@@ -289,6 +151,44 @@
 .highlights-admin-toolbar[hidden] {
     display: none;
 }
+
+.highlights-admin-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.highlight-add-button,
+.highlight-category-create {
+    min-height: 42px;
+    padding: 8px 0;
+    border: 0;
+    border-bottom: 1px solid var(--highlights-line);
+    background: transparent;
+    color: var(--highlights-ink);
+    font-size: .62rem;
+    font-weight: 600;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+
+.highlight-add-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.highlight-add-button span {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 400;
+}
+
+.highlight-category-create { color: var(--highlights-muted); }
+.highlight-add-button:hover,
+.highlight-add-button:focus-visible,
+.highlight-category-create:hover,
+.highlight-category-create:focus-visible { border-bottom-color: var(--highlights-ink); }
 
 .highlights-admin-toolbar .admin-item-menu {
     position: relative;
@@ -977,7 +877,7 @@
 }
 
 .viewer-media-error button,
-.viewer-empty a {
+.viewer-empty button {
     padding: 7px 0;
     border: 0;
     border-bottom: 1px solid var(--highlights-line);
@@ -1203,21 +1103,20 @@
     color: var(--highlights-muted);
 }
 
+.highlight-create-dialog .media-upload-preview-frame {
+    min-height: 210px;
+}
+
+#highlight-create-word-count {
+    color: var(--highlights-muted);
+    font-weight: 400;
+}
+
+#highlight-create-word-count.is-over-limit { color: #ad4d45; }
+
 @media (max-width: 1120px) {
-    .highlights-body .highlights-nav-primary {
-        gap: 20px;
-    }
-
-    .highlights-body .highlights-nav-primary > a {
-        font-size: .62rem;
-    }
-
-    .highlights-body .account-name {
-        display: none;
-    }
-
     .highlights-masthead h1 {
-        font-size: clamp(3.8rem, 8vw, 6.2rem);
+        font-size: var(--portfolio-title-size);
     }
 }
 
@@ -1226,121 +1125,14 @@
         --category-diameter: min(62vw, 39svh, 300px);
     }
 
-    .highlights-body.highlights-menu-open {
-        overflow: hidden;
-    }
-
-    .highlights-body .highlights-nav {
-        height: 64px;
-        padding: 0 19px;
-        background: color-mix(in srgb, var(--highlights-paper) 92%, transparent);
-        backdrop-filter: blur(12px);
-    }
-
-    .highlights-body .highlights-wordmark {
-        font-size: 1rem;
-    }
-
-    .highlights-body .highlights-menu-toggle {
-        z-index: 3;
-        grid-column: 2;
-        justify-self: end;
-        display: block;
-    }
-
-    .highlights-body .highlights-nav-links {
-        height: calc(100svh - 64px);
-        padding: 24px 20px max(24px, env(safe-area-inset-bottom));
-        position: fixed;
-        z-index: 2;
-        top: 64px;
-        right: 0;
-        left: 0;
-        display: none;
-        grid-template-rows: 1fr auto;
-        overflow: auto;
-        border-top: 1px solid var(--highlights-line-soft);
-        background: var(--highlights-paper);
-    }
-
-    .highlights-body .highlights-nav-links.open {
-        display: grid;
-        animation: highlights-mobile-menu-in .35s var(--highlights-ease) both;
-    }
-
-    @keyframes highlights-mobile-menu-in {
-        from { opacity: 0; transform: translateY(-8px); }
-        to { opacity: 1; transform: none; }
-    }
-
-    .highlights-body .highlights-nav-primary {
-        position: static;
-        align-self: start;
-        display: grid;
-        gap: 0;
-        transform: none;
-    }
-
-    .highlights-body .highlights-nav-primary > a,
-    .highlights-body .highlights-account-slot > a {
-        width: fit-content;
-        padding: 7px 0;
-        font-family: var(--font-display);
-        font-size: clamp(2.35rem, 12vw, 4.2rem);
-        font-weight: 400;
-        letter-spacing: -.045em;
-        line-height: 1.03;
-        text-transform: none;
-    }
-
-    .highlights-body .highlights-nav-primary > a::after,
-    .highlights-body .highlights-account-slot > a::after {
-        display: none;
-    }
-
-    .highlights-body .cart-link span {
-        margin-left: 5px;
-        font-family: var(--font-body);
-        font-size: .62rem;
-        transform: none;
-    }
-
-    .highlights-body .highlights-nav-tools {
-        grid-column: auto;
-        justify-self: stretch;
-        justify-content: space-between;
-        padding-top: 17px;
-        border-top: 1px solid var(--highlights-line-soft);
-    }
-
-    .highlights-body .highlights-account-slot {
-        min-width: 0;
-        justify-content: flex-start;
-    }
-
-    .highlights-body .account-name {
-        display: inline;
-    }
-
-    .highlights-body .highlights-account-slot .account-trigger {
-        min-height: 39px;
-    }
-
-    .highlights-body .account-menu {
-        right: auto;
-        left: 0;
-        bottom: calc(100% + 10px);
-        top: auto;
-    }
-
     .highlights-masthead {
-        width: calc(100% - 38px);
-        top: 94px;
-        left: 19px;
+        width: var(--page);
+        top: calc(var(--nav-height) + 65px);
+        left: 50%;
     }
 
     .highlights-masthead h1 {
-        font-size: clamp(3.45rem, 16vw, 5.2rem);
+        font-size: var(--portfolio-title-size);
     }
 
     .highlights-admin-toolbar .admin-menu-trigger {
@@ -1494,6 +1286,8 @@
         right: 0;
     }
 
+    .highlight-category-create { display: none; }
+
     .highlight-category-item {
         top: 53%;
     }
@@ -1550,7 +1344,7 @@
     }
 
     .highlights-masthead h1 {
-        font-size: 3.5rem;
+        font-size: var(--portfolio-title-size);
     }
 
     .highlight-category-item {
@@ -1598,7 +1392,7 @@
     }
 
     .highlights-masthead h1 {
-        font-size: clamp(3.2rem, 6.3vw, 5.2rem);
+        font-size: var(--portfolio-title-size);
     }
 
     .highlight-category-item {
@@ -1620,7 +1414,6 @@
 
 @media (prefers-reduced-motion: reduce) {
     .highlights-body.page-ready,
-    .highlights-body .highlights-nav-links.open,
     .highlight-viewer-shell,
     .highlight-viewer-dialog.is-closing .highlight-viewer-shell {
         animation: none !important;

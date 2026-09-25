@@ -44,6 +44,13 @@
     const categoryEditorSubmit = document.getElementById('category-editor-submit');
     const categoryEditorClose = document.getElementById('category-editor-close');
     const categoryEditorCancel = document.getElementById('category-editor-cancel');
+    const highlightCreateDialog = document.getElementById('highlight-create-dialog');
+    const highlightCreateForm = document.getElementById('highlight-create-form');
+    const highlightCreateCategory = document.getElementById('highlight-create-category');
+    const highlightCreateMessage = document.getElementById('highlight-create-message');
+    const highlightCreateCaption = highlightCreateForm.elements.caption;
+    const highlightCreateWordCount = document.getElementById('highlight-create-word-count');
+    const customHighlightCategory = highlightCreateForm.querySelector('[data-custom-highlight-category]');
 
     const initialParams = new URLSearchParams(window.location.search);
     const requestedCategoryId = initialParams.get('category');
@@ -86,7 +93,7 @@
     }
 
     function isEditorOpen() {
-        return Boolean(categoryEditorDialog.open);
+        return Boolean(categoryEditorDialog.open || highlightCreateDialog.open);
     }
 
     function replacePageUrl(itemId = null) {
@@ -107,12 +114,9 @@
     }
 
     function adminToolbarMarkup() {
-        return `<div class="admin-item-menu" data-admin-item-menu>
-            <button class="admin-menu-trigger" type="button" data-admin-menu-trigger aria-label="Add highlight content" aria-expanded="false">+</button>
-            <div class="admin-menu-popover" aria-label="Add highlight content">
-                <button type="button" data-create-category>Create category</button>
-                <a href="admin.html#highlight">Add highlight</a>
-            </div>
+        return `<div class="highlights-admin-actions">
+            <button class="highlight-add-button" type="button" data-add-highlight><span aria-hidden="true">+</span> Add Highlight</button>
+            <button class="highlight-category-create" type="button" data-create-category>Create category</button>
         </div>`;
     }
 
@@ -124,7 +128,7 @@
             <div class="admin-menu-popover" aria-label="Category actions">
                 <button type="button" data-category-view="${categoryId}">View highlights</button>
                 <button type="button" data-category-edit="${categoryId}">Edit category</button>
-                <a href="admin.html#highlight">Add highlight</a>
+                <button type="button" data-add-highlight data-category-id="${categoryId}">Add highlight</button>
                 <button type="button" data-category-delete="${categoryId}" data-admin-delete>Delete category</button>
             </div>
         </div>`;
@@ -220,6 +224,7 @@
     }
 
     function renderCategories(preferredCategoryId = null) {
+        syncHighlightCreateCategories(preferredCategoryId);
         if (!categories.length) {
             renderEmpty(
                 'No highlights yet',
@@ -335,6 +340,118 @@
         if (!isAdmin) return;
         adminToolbar.hidden = false;
         adminToolbar.innerHTML = adminToolbarMarkup();
+        highlightCreateDialog.hidden = false;
+    }
+
+    function syncHighlightCreateCategories(preferredCategoryId = null) {
+        if (!isAdmin) return;
+        const current = preferredCategoryId || highlightCreateCategory.value;
+        highlightCreateCategory.innerHTML = `${categories.map((category) => `<option value="${escapeHTML(category.id)}">${escapeHTML(category.name)}</option>`).join('')}<option value="__new__">Create a new category…</option>`;
+        if (categories.some((category) => category.id === current)) highlightCreateCategory.value = current;
+        else if (!categories.length) highlightCreateCategory.value = '__new__';
+        syncCustomHighlightCategory();
+    }
+
+    function syncCustomHighlightCategory() {
+        if (!isAdmin) return;
+        const needsCategory = highlightCreateCategory.value === '__new__';
+        customHighlightCategory.hidden = !needsCategory;
+        highlightCreateForm.elements.custom_category.required = needsCategory;
+        if (!needsCategory) highlightCreateForm.elements.custom_category.value = '';
+    }
+
+    function openHighlightCreator(categoryId = null) {
+        if (!isAdmin) return;
+        closeAdminMenus();
+        syncHighlightCreateCategories(categoryId || activeCategory()?.id || null);
+        highlightCreateMessage.textContent = '';
+        highlightCreateMessage.classList.remove('error');
+        highlightCreateDialog.showModal();
+    }
+
+    function closeHighlightCreator() {
+        if (highlightCreateDialog.open) highlightCreateDialog.close();
+        highlightCreateForm.reset();
+        highlightCreateMessage.textContent = '';
+        highlightCreateMessage.classList.remove('error');
+        highlightCreateCaption.dispatchEvent(new Event('input'));
+        syncHighlightCreateCategories(activeCategory()?.id || null);
+    }
+
+    function validateHighlightFile(file) {
+        const acceptedTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm'];
+        if (!file) throw new Error('Choose an image or video.');
+        if (!acceptedTypes.includes(file.type)) throw new Error('Use a JPEG, PNG, WebP, MP4, or WebM file.');
+        if (file.size > 50 * 1024 * 1024) throw new Error('Keep highlight media under 50MB.');
+    }
+
+    function highlightStoragePath(file) {
+        const extension = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '');
+        return `${state.user.id}/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${extension}`;
+    }
+
+    async function saveHighlight(event) {
+        event.preventDefault();
+        if (!isAdmin) return;
+        const button = highlightCreateForm.querySelector('[type="submit"]');
+        const file = window.PaintingMediaUpload?.get(highlightCreateForm.elements.media)?.file || highlightCreateForm.elements.media.files[0];
+        const caption = highlightCreateCaption.value.trim();
+        const words = caption ? caption.split(/\s+/).length : 0;
+        let categoryId = highlightCreateCategory.value;
+        let path = '';
+        button.disabled = true;
+        button.textContent = 'Uploading…';
+        highlightCreateMessage.textContent = 'Uploading and preparing the collection…';
+        highlightCreateMessage.classList.remove('error');
+        try {
+            validateHighlightFile(file);
+            if (words > 100) throw new Error('Keep the caption to 100 words or fewer.');
+            if (categoryId === '__new__') {
+                const name = highlightCreateForm.elements.custom_category.value.trim();
+                if (!name) throw new Error('Enter a name for the new category.');
+                const maxSortOrder = categories.reduce((maximum, category) => Math.max(maximum, Number(category.sort_order) || 0), 0);
+                const { data: newCategory, error: categoryError } = await sb.from('highlight_categories')
+                    .insert({ name, sort_order: maxSortOrder + 10 })
+                    .select('id, name, sort_order, created_at, updated_at')
+                    .single();
+                if (categoryError) throw categoryError;
+                categories.push({ ...newCategory, highlights: [], allHighlights: [] });
+                categories.sort((a, b) => (Number(a.sort_order) - Number(b.sort_order)) || a.name.localeCompare(b.name));
+                categoryId = newCategory.id;
+                syncHighlightCreateCategories(categoryId);
+            }
+            path = highlightStoragePath(file);
+            const { error: uploadError } = await sb.storage.from('highlights').upload(path, file, { cacheControl: '3600', upsert: false });
+            if (uploadError) throw uploadError;
+            const { data: newHighlight, error: insertError } = await sb.from('highlights').insert({
+                category_id: categoryId,
+                media_type: file.type.startsWith('video/') ? 'video' : 'image',
+                storage_path: path,
+                caption: caption || null,
+                published: highlightCreateForm.elements.published.checked,
+                created_by: state.user.id,
+            }).select('id, category_id, media_type, storage_path, caption, published, created_at, updated_at').single();
+            if (insertError) throw insertError;
+            const category = categories.find((entry) => entry.id === categoryId);
+            if (category) {
+                category.allHighlights.push(newHighlight);
+                category.allHighlights.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                if (newHighlight.published) {
+                    category.highlights.push(newHighlight);
+                    category.highlights.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                }
+            }
+            closeHighlightCreator();
+            renderCategories(categoryId);
+            showToast('Highlight shared.', 'success');
+        } catch (error) {
+            if (path) await sb.storage.from('highlights').remove([path]);
+            highlightCreateMessage.textContent = error.message || 'The highlight could not be shared.';
+            highlightCreateMessage.classList.add('error');
+        } finally {
+            button.disabled = false;
+            button.textContent = 'Share highlight';
+        }
     }
 
     function openCategoryEditor(mode, category = null) {
@@ -675,7 +792,7 @@
         viewerMediaSlot.setAttribute('aria-busy', 'false');
         viewerMediaSlot.innerHTML = `<div class="viewer-empty">
             <strong>This collection is waiting for its first moment.</strong>
-            ${isAdmin ? '<a href="admin.html#highlight">Add a highlight</a>' : ''}
+            ${isAdmin ? `<button type="button" data-add-highlight data-category-id="${escapeHTML(category.id)}">Add a highlight</button>` : ''}
         </div>`;
         viewerLiveStatus.textContent = `${category.name} has no published highlights.`;
         replacePageUrl();
@@ -839,7 +956,7 @@
 
         window.addEventListener('wheel', (event) => {
             if (categories.length < 2 || isViewerOpen() || isEditorOpen() || event.ctrlKey || event.metaKey) return;
-            if (document.querySelector('.highlights-nav-links.open, .account-menu.open, [data-admin-item-menu].open')) return;
+            if (document.querySelector('.nav-links.open, .account-menu.open, [data-admin-item-menu].open')) return;
             const horizontalGesture = Math.abs(event.deltaX) > Math.abs(event.deltaY);
             const primaryDelta = horizontalGesture ? event.deltaX : event.deltaY;
             if (!primaryDelta) return;
@@ -970,68 +1087,6 @@
         }, true);
     }
 
-    function initNavigationEnhancements() {
-        const menuToggle = document.querySelector('[data-menu-toggle]');
-        const navLinks = document.querySelector('[data-nav-links]');
-        const wordmark = document.querySelector('.highlights-wordmark');
-        const page = document.querySelector('.highlights-page');
-        const skipLink = document.querySelector('.highlights-skip-link');
-        if (!menuToggle || !navLinks) return;
-        const syncMenuState = () => {
-            const open = navLinks.classList.contains('open');
-            document.body.classList.toggle('highlights-menu-open', open);
-            menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-            if (page) page.inert = open;
-            if (skipLink) skipLink.inert = open;
-        };
-        menuToggle.addEventListener('click', () => window.setTimeout(syncMenuState, 0));
-        navLinks.addEventListener('click', (event) => {
-            if (event.target.closest('a')) window.setTimeout(syncMenuState, 0);
-        });
-        window.addEventListener('resize', () => {
-            const compactNavigation = window.matchMedia('(max-width: 820px), (max-width: 960px) and (max-height: 520px)').matches;
-            if (!compactNavigation && navLinks.classList.contains('open')) {
-                navLinks.classList.remove('open');
-                menuToggle.setAttribute('aria-expanded', 'false');
-                syncMenuState();
-            }
-        });
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Tab' && navLinks.classList.contains('open')) {
-                const focusable = [wordmark, menuToggle, ...navLinks.querySelectorAll('a[href], button:not(:disabled)')]
-                    .filter((element) => element && !element.hidden && element.offsetParent !== null);
-                const first = focusable[0];
-                const last = focusable.at(-1);
-                if (event.shiftKey && document.activeElement === first) {
-                    event.preventDefault();
-                    last?.focus();
-                } else if (!event.shiftKey && document.activeElement === last) {
-                    event.preventDefault();
-                    first?.focus();
-                }
-            }
-            if (event.key !== 'Escape') return;
-            if (navLinks.classList.contains('open')) {
-                navLinks.classList.remove('open');
-                menuToggle.setAttribute('aria-expanded', 'false');
-                syncMenuState();
-                menuToggle.focus();
-            }
-            const accountMenu = document.querySelector('[data-account-menu].open');
-            if (accountMenu) {
-                accountMenu.classList.remove('open');
-                document.querySelector('[data-account-trigger]')?.setAttribute('aria-expanded', 'false');
-            }
-            const adminActionMenu = document.querySelector('[data-admin-item-menu].open');
-            if (adminActionMenu) {
-                adminActionMenu.classList.remove('open');
-                const trigger = adminActionMenu.querySelector('[data-admin-menu-trigger]');
-                trigger?.setAttribute('aria-expanded', 'false');
-                trigger?.focus();
-            }
-        });
-    }
-
     function bindEvents() {
         categoryPrevious.addEventListener('click', () => moveCategory(-1, { focus: true }));
         categoryNext.addEventListener('click', () => moveCategory(1, { focus: true }));
@@ -1055,6 +1110,11 @@
         });
 
         categoryTrack.addEventListener('click', (event) => {
+            const addButton = event.target.closest('[data-add-highlight]');
+            if (addButton) {
+                openHighlightCreator(addButton.dataset.categoryId || activeCategory()?.id || null);
+                return;
+            }
             const viewButton = event.target.closest('[data-category-view]');
             if (viewButton) {
                 const index = categories.findIndex((category) => category.id === viewButton.dataset.categoryView);
@@ -1082,6 +1142,7 @@
 
         adminToolbar.addEventListener('click', (event) => {
             if (event.target.closest('[data-create-category]')) openCategoryEditor('create');
+            if (event.target.closest('[data-add-highlight]')) openHighlightCreator(activeCategory()?.id || null);
         });
 
         categoryEditorForm.addEventListener('submit', saveCategory);
@@ -1089,6 +1150,22 @@
         categoryEditorCancel.addEventListener('click', closeCategoryEditor);
         categoryEditorDialog.addEventListener('click', (event) => {
             if (event.target === categoryEditorDialog) closeCategoryEditor();
+        });
+
+        highlightCreateCategory.addEventListener('change', syncCustomHighlightCategory);
+        highlightCreateCaption.addEventListener('input', () => {
+            const words = highlightCreateCaption.value.trim() ? highlightCreateCaption.value.trim().split(/\s+/).length : 0;
+            highlightCreateWordCount.textContent = `${words}/100 words`;
+            highlightCreateWordCount.classList.toggle('is-over-limit', words > 100);
+        });
+        highlightCreateForm.addEventListener('submit', saveHighlight);
+        document.querySelectorAll('[data-close-highlight-dialog]').forEach((button) => button.addEventListener('click', closeHighlightCreator));
+        highlightCreateDialog.addEventListener('cancel', (event) => {
+            event.preventDefault();
+            closeHighlightCreator();
+        });
+        highlightCreateDialog.addEventListener('click', (event) => {
+            if (event.target === highlightCreateDialog) closeHighlightCreator();
         });
 
         viewerClose.addEventListener('click', closeViewer);
@@ -1102,6 +1179,14 @@
         });
         viewerDialog.addEventListener('close', finishViewerClose);
         viewerDialog.addEventListener('click', (event) => {
+            const addButton = event.target.closest('[data-add-highlight]');
+            if (addButton && isAdmin) {
+                const categoryId = addButton.dataset.categoryId || activeCategory()?.id || null;
+                stopViewerPlayback();
+                viewerDialog.close();
+                requestAnimationFrame(() => openHighlightCreator(categoryId));
+                return;
+            }
             const deleteButton = event.target.closest('[data-admin-delete="highlight"]');
             if (deleteButton && isAdmin) {
                 const item = viewerItems().find((entry) => entry.id === deleteButton.dataset.id);
@@ -1178,7 +1263,6 @@
     initWholePageWheel();
     initCategoryDrag();
     initViewerSwipe();
-    initNavigationEnhancements();
 
     sb.auth?.onAuthStateChange?.((event) => {
         if (event !== 'SIGNED_OUT') return;
@@ -1186,6 +1270,7 @@
         document.documentElement.classList.add('auth-pending');
         if (viewerDialog.open) viewerDialog.close();
         if (categoryEditorDialog.open) categoryEditorDialog.close();
+        if (highlightCreateDialog.open) highlightCreateDialog.close();
         redirectToLogin(window.location.href);
     });
 

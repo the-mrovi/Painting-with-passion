@@ -112,14 +112,52 @@
         const toggle = document.querySelector('[data-menu-toggle]');
         const nav = document.querySelector('[data-nav-links]');
         if (!toggle || !nav) return;
-        toggle.addEventListener('click', () => {
-            const open = nav.classList.toggle('open');
+        const wordmark = toggle.closest('.site-nav')?.querySelector('.wordmark');
+        const compactNavigation = window.matchMedia('(max-width: 900px)');
+
+        function setOpen(open, restoreFocus = false) {
+            nav.classList.toggle('open', open);
             toggle.setAttribute('aria-expanded', String(open));
+            toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+            document.body.classList.toggle('site-menu-open', open && compactNavigation.matches);
+            if (!open) {
+                nav.querySelector('[data-account-menu]')?.classList.remove('open');
+                nav.querySelector('[data-account-trigger]')?.setAttribute('aria-expanded', 'false');
+            }
+            if (restoreFocus) toggle.focus();
+        }
+
+        toggle.addEventListener('click', () => {
+            setOpen(!nav.classList.contains('open'));
         });
         nav.addEventListener('click', (event) => {
-            if (event.target.closest('a')) {
-                nav.classList.remove('open');
-                toggle.setAttribute('aria-expanded', 'false');
+            if (event.target.closest('a')) setOpen(false);
+        });
+        compactNavigation.addEventListener?.('change', (event) => {
+            if (!event.matches) setOpen(false);
+        });
+        document.addEventListener('keydown', (event) => {
+            if (!nav.classList.contains('open') || !compactNavigation.matches) return;
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                setOpen(false, true);
+                return;
+            }
+            if (event.key !== 'Tab') return;
+            const focusable = [wordmark, toggle, ...nav.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+                .filter((element) => element && !element.hidden && element.getClientRects().length);
+            if (!focusable.length) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            } else if (!focusable.includes(document.activeElement)) {
+                event.preventDefault();
+                first.focus();
             }
         });
     }
@@ -133,15 +171,36 @@
                 trigger.setAttribute('aria-expanded', String(open));
                 return;
             }
-            if (menu && !event.target.closest('.account-nav')) menu.classList.remove('open');
+            if (menu && !event.target.closest('.account-nav')) {
+                menu.classList.remove('open');
+                document.querySelector('[data-account-trigger]')?.setAttribute('aria-expanded', 'false');
+            }
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape') return;
+            const menu = document.querySelector('[data-account-menu].open');
+            if (menu) {
+                const trigger = document.querySelector('[data-account-trigger]');
+                menu.classList.remove('open');
+                trigger?.setAttribute('aria-expanded', 'false');
+                trigger?.focus();
+            }
+            const adminMenu = document.querySelector('[data-admin-item-menu].open');
+            if (adminMenu) {
+                adminMenu.classList.remove('open');
+                const trigger = adminMenu.querySelector('[data-admin-menu-trigger]');
+                trigger?.setAttribute('aria-expanded', 'false');
+                trigger?.focus();
+            }
         });
     }
 
     function updateNavigation() {
         const isAdmin = Boolean(state.profile?.is_admin);
+        const showCart = Boolean(state.user && !isAdmin);
         document.querySelectorAll('.cart-link').forEach((link) => {
-            link.hidden = isAdmin;
-            link.setAttribute('aria-hidden', String(isAdmin));
+            link.hidden = !showCart;
+            link.setAttribute('aria-hidden', String(!showCart));
         });
         document.querySelectorAll('[data-account-slot]').forEach((slot) => {
             if (!state.user) {

@@ -9,5 +9,5 @@ Thumbs.db
 !.env.example
 website-order-system-*.json
 
-# Unreferenced local mock/generated artwork; production artwork is in Supabase Storage
-img/
+# Keep full-resolution local sources out of Git; optimized homepage derivatives are tracked.
+img/*.png

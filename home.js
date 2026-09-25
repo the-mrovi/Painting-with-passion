@@ -1,9 +1,241 @@
 (async function () {
+    const introSeenKey = 'painting-with-passion:intro-seen';
+    const requestedInitialHash = ['#about', '#home-exhibition'].includes(window.location.hash)
+        ? window.location.hash
+        : '';
+    if (requestedInitialHash) {
+        history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    }
+
+    function hasSeenIntro() {
+        try {
+            return sessionStorage.getItem(introSeenKey) === 'true';
+        } catch {
+            return false;
+        }
+    }
+
+    function rememberIntro() {
+        try {
+            sessionStorage.setItem(introSeenKey, 'true');
+        } catch {
+            // The experience still works when storage is unavailable.
+        }
+    }
+
+    const introSequence = document.querySelector('[data-intro-sequence]');
+    const introGallery = document.querySelector('[data-intro-gallery]');
+    const introArtworks = [...document.querySelectorAll('.home-intro-art')];
+    const aboutSection = document.getElementById('about');
+    const aboutSteps = [...document.querySelectorAll('[data-about-step]')];
+    const exhibitionSection = document.getElementById('home-exhibition');
+    const homeNav = document.querySelector('.site-nav');
+    const aboutNavLink = document.querySelector('[data-home-about-link]');
+    const showcaseNavLink = document.querySelector('[data-home-showcase-link]');
+    const continueLink = document.querySelector('.home-about-continue');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const compactIntro = window.matchMedia('(max-width: 820px), (max-width: 960px) and (max-height: 520px)');
+    const artworkVectors = [
+        [-54, -24], [-36, -34], [-18, -42], [30, -38], [55, -25],
+        [-62, -4], [-38, 2], [39, -2], [62, -4],
+        [-57, 18], [-37, 24], [38, 25], [58, 18],
+        [-42, 38], [0, 43], [43, 37]
+    ];
+    let introCompleted = requestedInitialHash === '#home-exhibition'
+        || (requestedInitialHash !== '#about' && hasSeenIntro());
+    let introReplayActive = requestedInitialHash === '#about';
+    let introProgress = 0;
+    let introFrame = 0;
+
+    if (introCompleted) introSequence?.classList.add('is-complete');
+
+    function clamp(value, minimum = 0, maximum = 1) {
+        return Math.max(minimum, Math.min(maximum, value));
+    }
+
+    function ease(value) {
+        const progress = clamp(value);
+        return progress * progress * (3 - 2 * progress);
+    }
+
+    function between(value, start, end) {
+        return ease((value - start) / Math.max(end - start, .001));
+    }
+
+    function applyIntroProgress(progress) {
+        introProgress = clamp(progress);
+        const blurIn = compactIntro.matches ? 6 : 10;
+        const blurOut = compactIntro.matches ? 4 : 7;
+
+        aboutSteps.forEach((element, index) => {
+            const revealStart = .085 + index * .025;
+            const reveal = between(introProgress, revealStart, revealStart + .19);
+            const exitStart = .605 + index * .012;
+            const exit = between(introProgress, exitStart, exitStart + .17);
+            const opacity = reveal * (1 - exit);
+            const exitDirection = index < 2 ? -1 : index % 2 ? -1 : 1;
+            const x = reducedMotion ? 0 : exit * exitDirection * (index < 2 ? 0 : 4);
+            const y = reducedMotion ? 0 : (1 - reveal) * 20 + exit * exitDirection * (index < 2 ? 8 : 6);
+            const scale = reducedMotion ? 1 : 1 + exit * .004;
+            const blur = reducedMotion ? 0 : (1 - reveal) * blurIn + exit * blurOut;
+
+            element.style.opacity = opacity.toFixed(3);
+            element.style.filter = `blur(${blur.toFixed(2)}px)`;
+            element.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
+        });
+
+        const paintingProgress = between(introProgress, .625, .97);
+        const textOpening = between(introProgress, .055, .46);
+        const movementScale = compactIntro.matches ? .62 : 1;
+        introArtworks.forEach((artwork, index) => {
+            const vector = artworkVectors[index] || [0, 0];
+            const outwardProgress = textOpening + paintingProgress * .35;
+            const x = reducedMotion ? 0 : vector[0] * outwardProgress * movementScale;
+            const y = reducedMotion ? 0 : vector[1] * outwardProgress * movementScale;
+            const scale = reducedMotion ? 1.08 : 1.12 - textOpening * .08 + paintingProgress * .035;
+            artwork.style.setProperty('--gallery-x', `${x.toFixed(2)}px`);
+            artwork.style.setProperty('--gallery-y', `${y.toFixed(2)}px`);
+            artwork.style.setProperty('--gallery-scale', scale.toFixed(4));
+        });
+        if (introGallery) {
+            const galleryOpacity = .25 * (1 - paintingProgress);
+            introGallery.style.opacity = Math.max(0, galleryOpacity).toFixed(3);
+        }
+
+        exhibitionSection?.style.setProperty('--exhibition-opacity', paintingProgress.toFixed(3));
+        exhibitionSection?.style.setProperty('--exhibition-blur', `${(reducedMotion ? 0 : (1 - paintingProgress) * 5).toFixed(2)}px`);
+        exhibitionSection?.style.setProperty('--exhibition-shift-x', `${(reducedMotion ? 0 : (1 - paintingProgress) * 18).toFixed(2)}px`);
+        exhibitionSection?.style.setProperty('--exhibition-scale', (reducedMotion ? 1 : .965 + paintingProgress * .035).toFixed(4));
+
+        const exhibitionIsInteractive = introProgress >= .965;
+        const aboutIsInteractive = introProgress >= .24 && introProgress <= .72;
+        exhibitionSection?.classList.toggle('is-interactive', exhibitionIsInteractive);
+        aboutSection?.classList.toggle('is-interactive', aboutIsInteractive);
+        if (exhibitionSection) {
+            exhibitionSection.inert = !exhibitionIsInteractive;
+            exhibitionSection.setAttribute('aria-hidden', String(!exhibitionIsInteractive));
+        }
+        if (aboutSection) {
+            aboutSection.inert = !aboutIsInteractive;
+            aboutSection.setAttribute('aria-hidden', String(!aboutIsInteractive));
+        }
+
+        const navProgress = Math.max(between(introProgress, .24, .43), paintingProgress);
+        homeNav?.style.setProperty('--home-nav-opacity', navProgress.toFixed(3));
+        homeNav?.style.setProperty('--home-nav-shift', `${((1 - navProgress) * -7).toFixed(2)}px`);
+        const navIsInteractive = navProgress >= .92;
+        homeNav?.classList.toggle('is-intro-visible', navIsInteractive);
+        if (homeNav) homeNav.inert = !navIsInteractive;
+
+        const viewingAbout = introProgress >= .08 && introProgress < .72;
+        const viewingHome = introProgress >= .72;
+        aboutNavLink?.classList.toggle('active', viewingAbout);
+        if (viewingAbout) aboutNavLink?.setAttribute('aria-current', 'page');
+        else aboutNavLink?.removeAttribute('aria-current');
+        showcaseNavLink?.classList.toggle('active', viewingHome);
+        if (viewingHome) showcaseNavLink?.setAttribute('aria-current', 'page');
+        else showcaseNavLink?.removeAttribute('aria-current');
+    }
+
+    function syncIntroProgress() {
+        introFrame = 0;
+        if (!introSequence) return;
+        if (introCompleted && !introReplayActive) {
+            applyIntroProgress(1);
+            return;
+        }
+        const rect = introSequence.getBoundingClientRect();
+        const scrollDistance = Math.max(introSequence.offsetHeight - window.innerHeight, 1);
+        const progress = clamp(-rect.top / scrollDistance);
+        applyIntroProgress(progress);
+        if (progress >= .995) completeIntro();
+    }
+
+    function scheduleIntroSync() {
+        if (introFrame) return;
+        introFrame = requestAnimationFrame(syncIntroProgress);
+    }
+
+    function scrollToIntroProgress(progress, smooth = true) {
+        if (!introSequence) return;
+        const rect = introSequence.getBoundingClientRect();
+        const scrollDistance = Math.max(introSequence.offsetHeight - window.innerHeight, 1);
+        const top = window.scrollY + rect.top + scrollDistance * clamp(progress);
+        if (!smooth) {
+            const root = document.documentElement;
+            const previousBehavior = root.style.scrollBehavior;
+            root.style.scrollBehavior = 'auto';
+            window.scrollTo(0, top);
+            root.style.scrollBehavior = previousBehavior;
+            syncIntroProgress();
+            return;
+        }
+        window.scrollTo({ top, behavior: reducedMotion ? 'auto' : 'smooth' });
+    }
+
+    function completeIntro(updateHistory = true) {
+        if (!introSequence) return;
+        introCompleted = true;
+        introReplayActive = false;
+        rememberIntro();
+        applyIntroProgress(1);
+        introSequence.classList.add('is-complete');
+        const root = document.documentElement;
+        const previousBehavior = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto';
+        window.scrollTo(0, introSequence.offsetTop);
+        root.style.scrollBehavior = previousBehavior;
+        if (updateHistory && window.location.hash !== '#home-exhibition') {
+            history.replaceState(null, '', '#home-exhibition');
+        }
+    }
+
+    function openAbout(smooth = true) {
+        if (!introSequence) return;
+        introCompleted = false;
+        introReplayActive = true;
+        introSequence.classList.remove('is-complete');
+        exhibitionSection?.scrollTo({ top: 0, behavior: 'auto' });
+        requestAnimationFrame(() => scrollToIntroProgress(.49, smooth));
+    }
+
+    document.querySelectorAll('a[href="#about"]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            history.pushState(null, '', '#about');
+            openAbout();
+        });
+    });
+
+    document.querySelectorAll('[data-home-showcase-link]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            history.pushState(null, '', '#home-exhibition');
+            scrollToIntroProgress(1);
+        });
+    });
+
+    continueLink?.addEventListener('click', (event) => {
+        event.preventDefault();
+        history.pushState(null, '', '#home-exhibition');
+        scrollToIntroProgress(1);
+    });
+
+    applyIntroProgress(introCompleted ? 1 : 0);
+    window.addEventListener('scroll', scheduleIntroSync, { passive: true });
+    window.addEventListener('resize', scheduleIntroSync, { passive: true });
+    compactIntro.addEventListener?.('change', scheduleIntroSync);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (requestedInitialHash === '#about') openAbout(false);
+        else if (introCompleted || requestedInitialHash === '#home-exhibition') completeIntro(false);
+        else syncIntroProgress();
+        if (requestedInitialHash) history.replaceState(null, '', requestedInitialHash);
+    }));
+
     const app = window.PaintingApp;
     await app.ready;
 
     const { sb, state, signedUrls } = app;
-    const body = document.body;
     const stage = document.getElementById('artwork-stage');
     const track = document.getElementById('artwork-track');
     const controls = document.getElementById('artwork-controls');
@@ -19,28 +251,15 @@
     const currentElement = document.getElementById('artwork-current');
     const totalElement = document.getElementById('artwork-total');
     const indexElement = document.querySelector('.exhibition-index');
-    const menuToggle = document.querySelector('[data-menu-toggle]');
     const navLinks = document.querySelector('[data-nav-links]');
 
     const isAdmin = Boolean(state.profile?.is_admin);
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
     const coarsePointer = window.matchMedia('(pointer: coarse)');
     const stackedLayout = window.matchMedia(
         '(max-width: 820px), (max-width: 960px) and (max-height: 520px)'
     );
     const rotations = [-1.35, .8, -0.55, 1.2, -0.85, .45, -1.05, .68];
-
-    body.classList.add('home-auth-resolved');
-    body.classList.toggle('home-cart-visible', Boolean(state.user && !isAdmin));
-
-    if (state.user) {
-        sb.auth?.onAuthStateChange?.((event) => {
-            if (event !== 'SIGNED_OUT') return;
-            body.classList.remove('home-cart-visible');
-            window.location.replace('index.html');
-        });
-    }
 
     let storyScrollFrame = 0;
 
@@ -56,81 +275,7 @@
         storyScrollFrame = requestAnimationFrame(updateStoryScrollability);
     }
 
-    function closeMobileMenu(restoreFocus = false) {
-        if (!menuToggle || !navLinks) return;
-        navLinks.classList.remove('open');
-        navLinks.querySelector('[data-account-menu]')?.classList.remove('open');
-        navLinks.querySelector('[data-account-trigger]')?.setAttribute('aria-expanded', 'false');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        menuToggle.setAttribute('aria-label', 'Open menu');
-        body.classList.remove('home-menu-open');
-        if (restoreFocus) menuToggle.focus();
-    }
-
-    function syncMobileMenu() {
-        if (!menuToggle || !navLinks) return;
-        const open = navLinks.classList.contains('open');
-        if (!open) {
-            navLinks.querySelector('[data-account-menu]')?.classList.remove('open');
-            navLinks.querySelector('[data-account-trigger]')?.setAttribute('aria-expanded', 'false');
-        }
-        menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-        body.classList.toggle('home-menu-open', open && stackedLayout.matches);
-    }
-
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', syncMobileMenu);
-        navLinks.addEventListener('click', (event) => {
-            if (event.target.closest('a')) closeMobileMenu();
-        });
-        document.addEventListener('click', () => {
-            const accountMenu = navLinks.querySelector('[data-account-menu]');
-            const accountTrigger = navLinks.querySelector('[data-account-trigger]');
-            if (accountMenu && accountTrigger) {
-                accountTrigger.setAttribute('aria-expanded', String(accountMenu.classList.contains('open')));
-            }
-        });
-        document.addEventListener('keydown', (event) => {
-            const accountMenu = navLinks.querySelector('[data-account-menu].open');
-            if (event.key === 'Escape' && accountMenu) {
-                const accountTrigger = navLinks.querySelector('[data-account-trigger]');
-                event.preventDefault();
-                accountMenu.classList.remove('open');
-                accountTrigger?.setAttribute('aria-expanded', 'false');
-                accountTrigger?.focus();
-                return;
-            }
-
-            if (!navLinks.classList.contains('open') || !stackedLayout.matches) return;
-
-            if (event.key === 'Escape') {
-                event.preventDefault();
-                closeMobileMenu(true);
-                return;
-            }
-
-            if (event.key !== 'Tab') return;
-            const focusable = [menuToggle, ...navLinks.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')]
-                .filter((element) => !element.hidden && element.getClientRects().length);
-            if (!focusable.length) return;
-            const first = focusable[0];
-            const last = focusable[focusable.length - 1];
-            if (event.shiftKey && document.activeElement === first) {
-                event.preventDefault();
-                last.focus();
-            } else if (!event.shiftKey && document.activeElement === last) {
-                event.preventDefault();
-                first.focus();
-            } else if (!focusable.includes(document.activeElement)) {
-                event.preventDefault();
-                first.focus();
-            }
-        });
-        stackedLayout.addEventListener?.('change', (event) => {
-            if (!event.matches) closeMobileMenu();
-            scheduleStoryScrollability();
-        });
-    }
+    stackedLayout.addEventListener?.('change', scheduleStoryScrollability);
 
     function setIntroCopy(title, story) {
         titleElement.textContent = title;
@@ -657,6 +802,14 @@
         const multiplier = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
         const delta = rawDelta * multiplier;
         if (Math.abs(delta) < .5) return;
+        if (introProgress < .965) return;
+
+        const exhibitionRect = exhibitionSection?.getBoundingClientRect();
+        const exhibitionIsCurrent = exhibitionRect
+            && exhibitionRect.top <= Math.max(4, parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 68)
+            && exhibitionRect.bottom >= window.innerHeight * .72;
+        if (!exhibitionIsCurrent) return;
+        if (!horizontalGesture && delta < 0 && activeIndex === 0) return;
 
         const story = event.target.closest?.('.exhibition-story');
         if (story && !horizontalGesture) {

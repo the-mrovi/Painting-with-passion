@@ -1,4 +1,4 @@
-.post-page { width: min(820px, var(--page)); margin: 0 auto; padding: 80px 0 110px; }
+.post-page { width: min(820px, var(--page)); margin: 0 auto; padding: calc(var(--nav-height) + 80px) 0 110px; }
 .thought-article { min-height: 420px; }
 .article-heading { padding-bottom: 48px; border-bottom: 1px solid var(--line); }
 .article-heading h1 { margin: 22px 0 0; font-size: clamp(3.2rem, 7vw, 6.5rem); letter-spacing: -.05em; }
@@ -18,4 +18,4 @@
 .comment-item strong { font-family: var(--font-display); font-weight: 500; }.comment-item time { color: var(--muted); font-size: .7rem; }
 .comment-item p { margin: 10px 0 0; color: var(--muted); }
 .comment-delete { margin-top: 9px; padding: 0; border: 0; background: transparent; color: var(--accent); font-size: .68rem; }
-@media (max-width: 600px) { .post-page { padding-top: 45px; }.conversation > header { align-items: start; }.comment-form { margin-inline: -8px; padding: 18px; } }
+@media (max-width: 600px) { .post-page { padding-top: calc(var(--nav-height) + 45px); }.conversation > header { align-items: start; }.comment-form { margin-inline: -8px; padding: 18px; } }

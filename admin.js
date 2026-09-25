@@ -54,6 +54,16 @@
         if (file.size > maxMb * 1024 * 1024) throw new Error(`Keep files under ${maxMb}MB.`);
     }
 
+    function mediaUploadMarkup({ name, title, prompt, note, accept, required = false }) {
+        return `<div class="media-upload" data-media-upload>
+            <div class="media-upload-dropzone" data-media-dropzone>
+                <input class="media-upload-input" name="${name}" type="file" accept="${accept}" ${required ? 'required' : ''}>
+                <button class="media-upload-empty" type="button" data-media-empty data-media-select><span class="media-upload-mark" aria-hidden="true">+</span><strong>${title}</strong><span>${prompt}</span><small>${note}</small></button>
+                <span class="media-upload-preview" data-media-preview hidden><span class="media-upload-preview-frame" data-media-preview-slot></span><span class="media-upload-preview-details"><span class="media-upload-file-name" data-media-file-name></span><span class="media-upload-actions"><button type="button" data-media-change>Change media</button><button type="button" data-media-remove>Remove</button></span></span></span>
+            </div>
+        </div>`;
+    }
+
     function storagePath(file) {
         const extension = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '');
         return `${state.user.id}/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${extension}`;
@@ -165,7 +175,7 @@
     document.getElementById('artwork-form').addEventListener('submit', async (event) => {
         event.preventDefault();
         const form = event.currentTarget;
-        const file = form.elements.image.files[0];
+        const file = window.PaintingMediaUpload?.get(form.elements.image)?.file || form.elements.image.files[0];
         const button = form.querySelector('[type="submit"]');
         let path = '';
         button.disabled = true;
@@ -231,7 +241,7 @@
     document.getElementById('highlight-form').addEventListener('submit', async (event) => {
         event.preventDefault();
         const form = event.currentTarget;
-        const file = form.elements.media.files[0];
+        const file = window.PaintingMediaUpload?.get(form.elements.media)?.file || form.elements.media.files[0];
         const words = form.elements.caption.value.trim() ? form.elements.caption.value.trim().split(/\s+/).length : 0;
         const button = form.querySelector('[type="submit"]');
         let path = '';
@@ -339,15 +349,17 @@
         editForm.dataset.id = id;
         document.getElementById('editor-title').textContent = `Edit ${type}`;
         const fields = document.getElementById('editor-fields');
+        fields.querySelectorAll('[data-media-upload]').forEach((root) => window.PaintingMediaUpload?.get(root)?.clear());
         if (type === 'painting') {
-            fields.innerHTML = `<label>Artwork name<input name="title" required value="${escapeHTML(item.title)}"></label><div class="form-pair"><label>Price<input name="price" type="number" min="0" step="0.01" value="${item.price ?? ''}"></label><label>Currency<select name="currency"><option ${item.currency === 'BDT' ? 'selected' : ''}>BDT</option><option ${item.currency === 'USD' ? 'selected' : ''}>USD</option></select></label></div><div class="form-pair"><label>Medium<input name="medium" value="${escapeHTML(item.medium || '')}"></label><label>Dimensions<input name="dimensions" value="${escapeHTML(item.dimensions || '')}"></label></div><label>Short caption<input name="caption" value="${escapeHTML(item.caption || '')}"></label><label>Details<textarea name="description" rows="6">${escapeHTML(item.description || '')}</textarea></label><label>Replace image<input name="replacement" type="file" accept="image/jpeg,image/png,image/webp"></label><div class="check-row"><label><input type="checkbox" name="is_available" ${item.is_available ? 'checked' : ''}> Available</label><label><input type="checkbox" name="published" ${item.published ? 'checked' : ''}> Published</label></div>`;
+            fields.innerHTML = `<label>Artwork name<input name="title" required value="${escapeHTML(item.title)}"></label><div class="form-pair"><label>Price<input name="price" type="number" min="0" step="0.01" value="${item.price ?? ''}"></label><label>Currency<select name="currency"><option ${item.currency === 'BDT' ? 'selected' : ''}>BDT</option><option ${item.currency === 'USD' ? 'selected' : ''}>USD</option></select></label></div><div class="form-pair"><label>Medium<input name="medium" value="${escapeHTML(item.medium || '')}"></label><label>Dimensions<input name="dimensions" value="${escapeHTML(item.dimensions || '')}"></label></div><label>Short caption<input name="caption" value="${escapeHTML(item.caption || '')}"></label><label>Details<textarea name="description" rows="6">${escapeHTML(item.description || '')}</textarea></label>${mediaUploadMarkup({ name: 'replacement', title: 'Replace artwork image', prompt: 'Click or drag a new image here', note: 'Optional · JPEG, PNG, or WebP · up to 15MB', accept: 'image/jpeg,image/png,image/webp' })}<div class="check-row"><label><input type="checkbox" name="is_available" ${item.is_available ? 'checked' : ''}> Available</label><label><input type="checkbox" name="published" ${item.published ? 'checked' : ''}> Published</label></div>`;
         } else if (type === 'thought') {
             const { data: categories } = await sb.from('thought_categories').select('*').order('sort_order');
             fields.innerHTML = `<label>Title<input name="title" required value="${escapeHTML(item.title)}"></label><label>Category<select name="category_id"><option value="">Uncategorised</option>${(categories || []).map((category) => `<option value="${category.id}" ${category.id === item.category_id ? 'selected' : ''}>${escapeHTML(category.name)}</option>`).join('')}</select></label><label>Excerpt<textarea name="excerpt" rows="3">${escapeHTML(item.excerpt || '')}</textarea></label><label>Thought<textarea name="content" rows="12" required>${escapeHTML(item.content)}</textarea></label><label class="check-label"><input type="checkbox" name="published" ${item.published ? 'checked' : ''}> Published</label>`;
         } else {
             const { data: categories } = await sb.from('highlight_categories').select('*').order('sort_order');
-            fields.innerHTML = `<label>Category<select name="category_id" required>${(categories || []).map((category) => `<option value="${category.id}" ${category.id === item.category_id ? 'selected' : ''}>${escapeHTML(category.name)}</option>`).join('')}</select></label><label>Caption<textarea name="caption" rows="6" maxlength="900">${escapeHTML(item.caption || '')}</textarea><small>Maximum 100 words</small></label><label>Replace image or video<input name="replacement" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"><small>Optional · up to 50MB</small></label><label class="check-label"><input type="checkbox" name="published" ${item.published ? 'checked' : ''}> Published</label>`;
+            fields.innerHTML = `<label>Category<select name="category_id" required>${(categories || []).map((category) => `<option value="${category.id}" ${category.id === item.category_id ? 'selected' : ''}>${escapeHTML(category.name)}</option>`).join('')}</select></label><label>Caption<textarea name="caption" rows="6" maxlength="900">${escapeHTML(item.caption || '')}</textarea><small>Maximum 100 words</small></label>${mediaUploadMarkup({ name: 'replacement', title: 'Replace image or video', prompt: 'Click or drag new media here', note: 'Optional · JPEG, PNG, WebP, MP4, or WebM · up to 50MB', accept: 'image/jpeg,image/png,image/webp,video/mp4,video/webm' })}<label class="check-label"><input type="checkbox" name="published" ${item.published ? 'checked' : ''}> Published</label>`;
         }
+        window.PaintingMediaUpload?.initAll(fields);
         editDialog.showModal();
     }
 
@@ -362,7 +374,7 @@
         let uploadedBucket = '';
         try {
             if (type === 'painting') {
-                const replacement = editForm.elements.replacement.files[0];
+                const replacement = window.PaintingMediaUpload?.get(editForm.elements.replacement)?.file || editForm.elements.replacement.files[0];
                 if (replacement) {
                     validateFile(replacement, acceptedArtworkTypes, 15);
                     uploadedBucket = 'artworks';
@@ -391,7 +403,7 @@
                 if (error) throw error;
                 await loadThoughts();
             } else {
-                const replacement = editForm.elements.replacement.files[0];
+                const replacement = window.PaintingMediaUpload?.get(editForm.elements.replacement)?.file || editForm.elements.replacement.files[0];
                 const caption = editForm.elements.caption.value.trim();
                 const words = caption ? caption.split(/\s+/).length : 0;
                 if (words > 100) throw new Error('Keep the caption to 100 words or fewer.');
@@ -420,6 +432,9 @@
             if (newPath && uploadedBucket) await sb.storage.from(uploadedBucket).remove([newPath]);
             showToast(error.message, 'error');
         } finally { button.disabled = false; }
+    });
+    editDialog.addEventListener('close', () => {
+        editForm.querySelectorAll('[data-media-upload]').forEach((root) => window.PaintingMediaUpload?.get(root)?.clear());
     });
     document.querySelectorAll('[data-close-editor]').forEach((button) => button.addEventListener('click', () => editDialog.close()));
 

@@ -8,7 +8,15 @@
     const passwordForm = document.getElementById('password-form');
     const orders = document.getElementById('profile-orders');
 
-    heading.innerHTML = `<span>${escapeHTML((profile.full_name || 'A').charAt(0).toUpperCase())}</span><div><p class="eyebrow">${profile.is_admin ? 'Admin account' : 'Member account'}</p><h1>${escapeHTML(profile.full_name || 'Your account')}</h1><p>${escapeHTML(profile.email || state.user.email || '')}</p></div>`;
+    heading.innerHTML = `
+        <div class="profile-heading-copy">
+            <p class="eyebrow">${profile.is_admin ? 'Admin account' : 'Member account'}</p>
+            <h1 class="site-page-title portfolio-section-title">Profile</h1>
+        </div>
+        <div class="profile-identity">
+            <span>${escapeHTML((profile.full_name || 'A').charAt(0).toUpperCase())}</span>
+            <div><strong>${escapeHTML(profile.full_name || 'Your account')}</strong><p>${escapeHTML(profile.email || state.user.email || '')}</p></div>
+        </div>`;
     form.elements.full_name.value = profile.full_name || '';
     form.elements.phone_number.value = profile.phone_number || '';
     form.elements.email.value = profile.email || state.user.email || '';

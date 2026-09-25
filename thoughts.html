@@ -8,12 +8,26 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="thoughts.js" defer></script>
 </head>
 <body>
-    <nav class="site-nav" aria-label="Main navigation"><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-label="Open menu"><span></span><span></span></button><div class="nav-links" data-nav-links><a href="gallery.html" data-protected-link>Gallery</a><a href="highlights.html" data-protected-link>Highlights</a><a class="active" href="thoughts.html">Thoughts</a><a class="cart-link" href="checkout.html" data-protected-link>Cart <span data-cart-count>0</span></a><div data-account-slot></div><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div></nav>
+    <nav class="site-nav" aria-label="Main navigation"><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav-links" aria-label="Open menu"><span></span><span></span></button><div class="nav-links" id="site-nav-links" data-nav-links><div class="nav-primary"><a href="index.html">Home</a><a href="index.html#about">About</a><a href="gallery.html" data-protected-link>Gallery</a><a href="highlights.html" data-protected-link>Highlights</a><a class="active" href="thoughts.html" aria-current="page">Thoughts</a><a href="profile.html" data-protected-link>Profile</a><a class="cart-link" href="checkout.html" data-protected-link hidden>Cart <span data-cart-count>0</span></a></div><div class="nav-tools"><div class="nav-account-slot" data-account-slot><a class="nav-account-link" href="login.html">Sign in</a></div><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div></div></nav>
     <main class="thoughts-page">
-        <header class="page-intro editorial"><p class="eyebrow">Notes from the margins</p><h1>Thoughts</h1><p>On painting, attention, and the small things I want to remember.</p></header>
+        <header class="page-intro editorial"><p class="eyebrow">Notes from the margins</p><h1 class="site-page-title portfolio-section-title">Thoughts</h1><p>On painting, attention, and the small things I want to remember.</p></header>
         <div class="thought-tools"><label class="search-field"><span>Search thoughts</span><input id="thought-search" type="search" placeholder="Search by word or title"></label><div class="filter-row" id="thought-filters"></div></div>
         <section class="thoughts-feed loading-block" id="thoughts-feed" aria-live="polite"></section>
     </main>
+    <dialog class="creation-dialog" id="thought-create-dialog" aria-labelledby="thought-create-title" hidden>
+        <form class="creation-dialog-form admin-form" id="thought-create-form">
+            <button class="creation-dialog-close" type="button" data-close-thought-dialog aria-label="Close thought editor">×</button>
+            <header class="creation-dialog-header"><p class="eyebrow">From the writing desk</p><h2 id="thought-create-title">Add thought</h2><p>Publish a note directly into Thoughts, or organise it under a new category.</p></header>
+            <label>Title<input name="title" required maxlength="180"></label>
+            <label>Category<select name="category_id" data-thought-create-category><option value="">Uncategorised</option></select></label>
+            <label data-custom-thought-category hidden>New category name<input name="custom_category" maxlength="60" autocomplete="off"></label>
+            <label>Short excerpt<textarea name="excerpt" rows="3" placeholder="Optional summary for the Thoughts page"></textarea></label>
+            <label>Thought<textarea name="content" rows="12" maxlength="50000" required></textarea></label>
+            <label class="check-label"><input name="published" type="checkbox" checked> Published</label>
+            <p class="creation-dialog-message" id="thought-create-message" role="status"></p>
+            <div class="creation-dialog-actions"><button class="button quiet" type="button" data-close-thought-dialog>Cancel</button><button class="button primary" type="submit">Publish thought</button></div>
+        </form>
+    </dialog>
     <footer class="site-footer"><div><a class="wordmark" href="index.html"><span>Painting</span> with passion</a><p>Paintings and notes by Sanjana Rahman Nowrin.</p></div><div><a href="thoughts.html">Thoughts</a><a href="https://www.instagram.com/painting_with_passion_._/" target="_blank" rel="noreferrer">Instagram</a></div><p>© 2026 · Developed by Rahman Ovi</p></footer>
 </body>
 </html>
