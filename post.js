@@ -38,7 +38,11 @@
 
     likeButton.addEventListener('click', async () => {
         if (!state.user) {
-            window.location.href = app.loginUrl(window.location.href);
+            app.showAuthDialog(window.location.href, {
+                eyebrow: 'Thoughts',
+                title: 'Log in to like this thought.',
+                message: 'Sign in or create an account, then you will return to this post.',
+            });
             return;
         }
         likeButton.disabled = true;
@@ -67,7 +71,14 @@
     }
 
     if (!state.user) {
-        commentForm.innerHTML = `<p>Have something to add? <a href="${app.loginUrl(window.location.href)}">Sign in to comment</a>.</p>`;
+        commentForm.innerHTML = '<p>Have something to add? <button class="text-link" type="button" data-comment-login>Log in to comment</button>.</p>';
+        commentForm.querySelector('[data-comment-login]').addEventListener('click', () => {
+            app.showAuthDialog(window.location.href, {
+                eyebrow: 'Conversation',
+                title: 'Log in to leave a comment.',
+                message: 'Everyone can read the conversation. Sign in or create an account to join it.',
+            });
+        });
     } else {
         commentForm.addEventListener('submit', async (event) => {
             event.preventDefault();

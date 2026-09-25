@@ -235,7 +235,7 @@
         counters.forEach((counter) => { counter.textContent = String(count); });
     }
 
-    function showAuthDialog(targetHref) {
+    function showAuthDialog(targetHref, options = {}) {
         let dialog = document.getElementById('auth-required-dialog');
         if (!dialog) {
             dialog = document.createElement('dialog');
@@ -243,11 +243,15 @@
             dialog.className = 'auth-dialog';
             document.body.appendChild(dialog);
         }
+        if (dialog.open) dialog.close();
+        const eyebrow = options.eyebrow || 'Members only';
+        const title = options.title || 'Come inside the studio';
+        const message = options.message || 'Sign in or create an account to continue.';
         dialog.innerHTML = `
             <button class="dialog-close" type="button" aria-label="Close">×</button>
-            <p class="eyebrow">Members only</p>
-            <h2>Come inside the studio</h2>
-            <p>Sign in or create an account to view artworks and highlights.</p>
+            <p class="eyebrow">${escapeHTML(eyebrow)}</p>
+            <h2>${escapeHTML(title)}</h2>
+            <p>${escapeHTML(message)}</p>
             <div class="dialog-actions">
                 <a class="button primary" href="${loginUrl(targetHref)}">Sign in</a>
                 <a class="button quiet" href="${loginUrl(targetHref, 'register')}">Create account</a>
@@ -282,7 +286,12 @@
             const protectedLink = event.target.closest('a[data-protected-link]');
             if (protectedLink && !state.user) {
                 event.preventDefault();
-                showAuthDialog(protectedLink.href);
+                const destination = new URL(protectedLink.href, window.location.href).pathname.split('/').pop();
+                showAuthDialog(protectedLink.href, destination === 'highlights.html' ? {
+                    eyebrow: 'Highlights',
+                    title: 'Log in to view Highlights.',
+                    message: 'Highlight images and videos are shared with signed-in members only.',
+                } : {});
                 return;
             }
             const logout = event.target.closest('[data-signout]');
@@ -380,6 +389,6 @@
 
     window.PaintingApp = {
         sb, state, ready, icons, escapeHTML, formatDate, formatMoney, relativeTime,
-        signedUrls, emptyState, showToast, safeNext, loginUrl, redirectToLogin, updateCartCount, adminMenu,
+        signedUrls, emptyState, showToast, showAuthDialog, safeNext, loginUrl, redirectToLogin, updateCartCount, adminMenu,
     };
 })();

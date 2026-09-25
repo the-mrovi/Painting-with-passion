@@ -8,18 +8,18 @@
     <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="gallery.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="supabase-config.js"></script><script src="app.js" defer></script><script src="media-upload.js" defer></script><script src="gallery.js" defer></script>
 </head>
-<body data-access="member">
+<body>
     <nav class="site-nav" aria-label="Main navigation">
         <a class="wordmark" href="index.html"><span>Painting</span> with passion</a>
         <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav-links" aria-label="Open menu"><span></span><span></span></button>
         <div class="nav-links" id="site-nav-links" data-nav-links>
-            <div class="nav-primary"><a href="index.html">Home</a><a href="index.html#about">About</a><a class="active" href="gallery.html" aria-current="page">Gallery</a><a href="highlights.html">Highlights</a><a href="thoughts.html">Thoughts</a><a href="profile.html">Profile</a><a class="cart-link" href="checkout.html" hidden>Cart <span data-cart-count>0</span></a></div>
+            <div class="nav-primary"><a href="index.html">Home</a><a href="index.html#about">About</a><a class="active" href="gallery.html" aria-current="page">Gallery</a><a href="highlights.html" data-protected-link>Highlights</a><a href="thoughts.html">Thoughts</a><a href="profile.html" data-protected-link>Profile</a><a class="cart-link" href="checkout.html" data-protected-link hidden>Cart <span data-cart-count>0</span></a></div>
             <div class="nav-tools"><div class="nav-account-slot" data-account-slot><a class="nav-account-link" href="login.html">Sign in</a></div><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
         </div>
     </nav>
     <main class="collection-page">
         <header class="page-intro"><p class="eyebrow">Original work</p><h1 class="site-page-title portfolio-section-title">Gallery</h1><p>A living catalogue of finished pieces and paintings still looking for a home.</p></header>
-        <div class="filter-row" id="gallery-filters" aria-label="Filter artwork"><button class="filter-chip active" data-filter="all">All</button><button class="filter-chip" data-filter="available">Available</button><button class="filter-chip" data-filter="collected">Collected</button></div>
+        <div class="filter-row" id="gallery-filters" aria-label="Filter artwork"><button class="filter-chip active" data-filter="all">All</button><button class="filter-chip" data-filter="available">Available</button><button class="filter-chip" data-filter="unavailable">Unavailable</button></div>
         <section class="gallery-grid loading-block" id="gallery-grid" aria-live="polite"></section>
     </main>
     <dialog class="creation-dialog" id="artwork-create-dialog" aria-labelledby="artwork-create-title" hidden>

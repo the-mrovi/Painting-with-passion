@@ -17,7 +17,7 @@
     --page: min(1240px, calc(100vw - 48px));
     --nav-height: 68px;
     --page-title-size: clamp(3.5rem, 6.4vw, 6.2rem);
-    --portfolio-title-size: clamp(1.75rem, 3.2vw, 3.1rem);
+    --portfolio-title-size: clamp(1.5rem, 2.25vw, 2.25rem);
 }
 
 [data-theme="dark"] {

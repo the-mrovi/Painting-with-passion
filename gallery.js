@@ -21,7 +21,10 @@
     }
 
     async function loadPaintings() {
-        const { data, error } = await sb.from('paintings').select('*').eq('published', true).order('created_at', { ascending: false });
+        const request = state.user
+            ? sb.from('paintings').select('*').eq('published', true).order('created_at', { ascending: false })
+            : sb.rpc('get_public_paintings');
+        const { data, error } = await request;
         if (error) {
             emptyState(grid, 'The collection could not be loaded.', 'Please try again shortly.');
             return false;
@@ -46,7 +49,7 @@
                     <span class="gallery-image"><img src="${urls.get(painting.storage_path) || ''}" alt="${escapeHTML(painting.title)}"></span>
                     <span class="gallery-caption">
                         <span><strong>${escapeHTML(painting.title)}</strong><small>${escapeHTML([painting.medium, painting.dimensions].filter(Boolean).join(' · '))}</small></span>
-                        <span><em>${painting.is_available ? 'Available' : 'Collected'}</em><small>${formatMoney(painting.price, painting.currency)}</small></span>
+                        <span><em>${painting.is_available ? 'Available' : 'Currently unavailable'}</em><small>${formatMoney(painting.price, painting.currency)}</small></span>
                     </span>
                 </a>
             </article>`;

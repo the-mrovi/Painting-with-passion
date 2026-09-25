@@ -395,35 +395,68 @@
 }
 
 .exhibition-story {
-    max-height: min(25vh, 220px);
-    padding-right: 14px;
-    overflow: auto;
     color: var(--home-ink);
     font-family: var(--font-display);
     font-size: clamp(.98rem, 1.15vw, 1.16rem);
     line-height: 1.46;
-    scrollbar-color: var(--home-line) transparent;
-    scrollbar-width: thin;
-    overscroll-behavior: contain;
 }
 
-.exhibition-story p {
+.exhibition-story-text {
     margin: 0;
     white-space: pre-line;
 }
 
-.exhibition-story:focus-visible {
-    outline: 2px solid var(--home-ink);
-    outline-offset: 4px;
+.exhibition-story.is-collapsible .exhibition-story-text {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
 }
 
-.exhibition-story::-webkit-scrollbar {
-    width: 3px;
+.exhibition-story-more {
+    margin-top: 5px;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    background: transparent;
+    color: var(--home-muted);
+    font: 600 .72rem/1.4 var(--font-body);
+    letter-spacing: .08em;
+    cursor: pointer;
+    transition: color .2s ease, border-color .2s ease;
 }
 
-.exhibition-story::-webkit-scrollbar-thumb {
-    background: var(--home-line);
+.exhibition-story-more:hover,
+.exhibition-story-more:focus-visible {
+    color: var(--home-ink);
+    border-bottom-color: currentColor;
+    outline: none;
 }
+
+.artwork-story-dialog {
+    width: min(660px, calc(100vw - 34px));
+    max-height: min(78vh, 760px);
+}
+
+.artwork-story-dialog h2 {
+    margin-bottom: 20px;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+}
+
+.artwork-story-dialog-copy {
+    max-height: min(52vh, 500px);
+    padding-right: 10px;
+    overflow: auto;
+    color: var(--home-muted);
+    font-family: var(--font-display);
+    font-size: 1.08rem;
+    line-height: 1.68;
+    overscroll-behavior: contain;
+}
+
+.artwork-story-dialog-copy p:first-child { margin-top: 0; }
+.artwork-story-dialog-copy p:last-child { margin-bottom: 0; }
 
 .exhibition-meta {
     margin: clamp(22px, 3.4vh, 34px) 0 0;
@@ -1014,9 +1047,6 @@
     }
 
     .exhibition-story {
-        max-height: none;
-        padding-right: 0;
-        overflow: visible;
         font-size: 1.08rem;
     }
 
@@ -1211,10 +1241,6 @@
 
     .exhibition-story-block {
         margin-top: 18px;
-    }
-
-    .exhibition-story {
-        max-height: 18vh;
     }
 
     .exhibition-meta {

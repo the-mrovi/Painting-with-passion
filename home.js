@@ -3,6 +3,7 @@
     const requestedInitialHash = ['#about', '#home-exhibition'].includes(window.location.hash)
         ? window.location.hash
         : '';
+    const requestedArtworkId = new URLSearchParams(window.location.search).get('artwork');
     if (requestedInitialHash) {
         history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
     }
@@ -261,21 +262,101 @@
     );
     const rotations = [-1.35, .8, -0.55, 1.2, -0.85, .45, -1.05, .68];
 
-    let storyScrollFrame = 0;
+    let storyMeasureFrame = 0;
+    let currentStoryPainting = null;
 
-    function updateStoryScrollability() {
-        storyScrollFrame = 0;
-        const needsOwnScroll = !stackedLayout.matches
-            && storyElement.scrollHeight > storyElement.clientHeight + 2;
-        storyElement.tabIndex = needsOwnScroll ? 0 : -1;
+    function scheduleStoryMeasurement() {
+        if (storyMeasureFrame) cancelAnimationFrame(storyMeasureFrame);
+        storyMeasureFrame = requestAnimationFrame(() => {
+            storyMeasureFrame = 0;
+            const paragraph = storyElement.querySelector('.exhibition-story-text');
+            const button = storyElement.querySelector('.exhibition-story-more');
+            if (!paragraph || !button || !currentStoryPainting) return;
+            const needsExpansion = state.user
+                ? paragraph.scrollHeight > paragraph.clientHeight + 1
+                : Boolean(currentStoryPainting.has_more_story);
+            button.hidden = !needsExpansion;
+            storyElement.classList.toggle('is-collapsible', needsExpansion);
+        });
     }
 
-    function scheduleStoryScrollability() {
-        if (storyScrollFrame) cancelAnimationFrame(storyScrollFrame);
-        storyScrollFrame = requestAnimationFrame(updateStoryScrollability);
+    function artworkReturnUrl(paintingId) {
+        const target = new URL('index.html', window.location.href);
+        target.searchParams.set('artwork', paintingId);
+        target.hash = 'home-exhibition';
+        return target.href;
     }
 
-    stackedLayout.addEventListener?.('change', scheduleStoryScrollability);
+    function showFullStory(painting) {
+        let dialog = document.getElementById('artwork-story-dialog');
+        if (!dialog) {
+            dialog = document.createElement('dialog');
+            dialog.id = 'artwork-story-dialog';
+            dialog.className = 'auth-dialog artwork-story-dialog';
+            document.body.appendChild(dialog);
+        }
+        const story = painting.description?.trim() || painting.caption?.trim() || 'No story has been added for this work yet.';
+        dialog.replaceChildren();
+
+        const closeButton = document.createElement('button');
+        closeButton.className = 'dialog-close';
+        closeButton.type = 'button';
+        closeButton.setAttribute('aria-label', 'Close story');
+        closeButton.textContent = '×';
+
+        const label = document.createElement('p');
+        label.className = 'eyebrow';
+        label.textContent = 'Painting story';
+
+        const heading = document.createElement('h2');
+        heading.textContent = painting.title;
+
+        const copy = document.createElement('div');
+        copy.className = 'artwork-story-dialog-copy';
+        story.split(/\n{2,}/).filter(Boolean).forEach((section) => {
+            const paragraph = document.createElement('p');
+            paragraph.textContent = section;
+            copy.appendChild(paragraph);
+        });
+
+        dialog.append(closeButton, label, heading, copy);
+        closeButton.addEventListener('click', () => dialog.close());
+        dialog.showModal();
+    }
+
+    function renderStory(painting) {
+        currentStoryPainting = painting;
+        storyElement.replaceChildren();
+        storyElement.classList.remove('is-collapsible');
+        storyElement.classList.add('is-collapsible');
+        storyElement.tabIndex = -1;
+
+        const paragraph = document.createElement('p');
+        paragraph.className = 'exhibition-story-text';
+        paragraph.textContent = state.user
+            ? (painting.description?.trim() || painting.caption?.trim() || 'No story has been added for this work yet.')
+            : (painting.story_preview?.trim() || 'No story has been added for this work yet.');
+
+        const moreButton = document.createElement('button');
+        moreButton.className = 'exhibition-story-more';
+        moreButton.type = 'button';
+        moreButton.hidden = true;
+        moreButton.textContent = '… See more';
+        moreButton.addEventListener('click', () => {
+            if (!state.user) {
+                app.showAuthDialog(artworkReturnUrl(painting.id), {
+                    eyebrow: 'Artwork story',
+                    title: 'Log in to read the full story.',
+                    message: 'Sign in or create an account, then you will return to this painting.',
+                });
+                return;
+            }
+            showFullStory(painting);
+        });
+
+        storyElement.append(paragraph, moreButton);
+        scheduleStoryMeasurement();
+    }
 
     function setIntroCopy(title, story) {
         titleElement.textContent = title;
@@ -283,12 +364,12 @@
         const paragraph = document.createElement('p');
         paragraph.textContent = story;
         storyElement.appendChild(paragraph);
+        currentStoryPainting = null;
         metaElement.replaceChildren();
         adminLink.hidden = true;
         currentElement.textContent = '—';
         totalElement.textContent = '—';
         indexElement.hidden = false;
-        scheduleStoryScrollability();
     }
 
     function makeMessage({ kicker, title, copy, actions = [] }) {
@@ -333,28 +414,14 @@
         track.appendChild(message);
     }
 
-    if (!state.user) {
-        setIntroCopy(
-            'The private collection',
-            'Original paintings are shared inside the members’ studio. Sign in to move through the exhibition one work at a time.'
-        );
-        makeMessage({
-            kicker: 'Members’ exhibition',
-            title: 'Come inside the studio.',
-            copy: 'Sign in or create an account to see the paintings, their stories, and available work.',
-            actions: [
-                { label: 'Sign in', href: app.loginUrl('index.html') },
-                { label: 'Create account', href: app.loginUrl('index.html', 'register') },
-            ],
-        });
-        return;
-    }
-
-    const { data: paintings, error } = await sb
-        .from('paintings')
-        .select('id, title, storage_path, caption, description, medium, dimensions, created_at')
-        .eq('published', true)
-        .order('created_at', { ascending: false });
+    const paintingRequest = state.user
+        ? sb
+            .from('paintings')
+            .select('id, title, storage_path, caption, description, medium, dimensions, is_available, created_at')
+            .eq('published', true)
+            .order('created_at', { ascending: false })
+        : sb.rpc('get_public_paintings');
+    const { data: paintings, error } = await paintingRequest;
 
     if (error) {
         setIntroCopy(
@@ -386,7 +453,7 @@
         return;
     }
 
-    let activeIndex = 0;
+    let activeIndex = Math.max(0, paintings.findIndex((painting) => painting.id === requestedArtworkId));
     let isTransitioning = false;
     let queuedIndex = null;
     let transitionTimer = 0;
@@ -488,15 +555,8 @@
 
     function updateInfo(index, announce = false) {
         const painting = paintings[index];
-        const story = painting.description?.trim()
-            || painting.caption?.trim()
-            || 'No story has been added for this work yet.';
-
         titleElement.textContent = painting.title;
-        storyElement.replaceChildren();
-        const paragraph = document.createElement('p');
-        paragraph.textContent = story;
-        storyElement.appendChild(paragraph);
+        renderStory(painting);
 
         metaElement.replaceChildren();
         addMetaRow('Medium', painting.medium);
@@ -510,9 +570,6 @@
 
         currentElement.textContent = padIndex(index + 1);
         totalElement.textContent = padIndex(paintings.length);
-        storyElement.scrollTop = 0;
-        scheduleStoryScrollability();
-
         if (announce) {
             liveStatus.textContent = `Artwork ${index + 1} of ${paintings.length}: ${painting.title}`;
         }
@@ -758,9 +815,9 @@
         : 'Scroll, drag, or use arrow keys';
 
     layoutCards();
-    updateInfo(0);
-    prepareImages(nearbyIndexes(0, 1)).catch(() => {});
-    window.setTimeout(() => prepareImages(nearbyIndexes(0, 2)).catch(() => {}), 900);
+    updateInfo(activeIndex);
+    prepareImages(nearbyIndexes(activeIndex, 1)).catch(() => {});
+    window.setTimeout(() => prepareImages(nearbyIndexes(activeIndex, 2)).catch(() => {}), 900);
 
     previousButton.addEventListener('click', () => {
         if (previousButton.getAttribute('aria-disabled') !== 'true') {
@@ -810,14 +867,6 @@
             && exhibitionRect.bottom >= window.innerHeight * .72;
         if (!exhibitionIsCurrent) return;
         if (!horizontalGesture && delta < 0 && activeIndex === 0) return;
-
-        const story = event.target.closest?.('.exhibition-story');
-        if (story && !horizontalGesture) {
-            const canScrollBack = delta < 0 && story.scrollTop > 1;
-            const canScrollForward = delta > 0
-                && story.scrollTop + story.clientHeight < story.scrollHeight - 1;
-            if (canScrollBack || canScrollForward) return;
-        }
 
         event.preventDefault();
         window.clearTimeout(wheelResetTimer);
@@ -933,7 +982,7 @@
 
     window.addEventListener('resize', () => {
         resetParallax();
-        scheduleStoryScrollability();
+        scheduleStoryMeasurement();
     }, { passive: true });
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden) prepareImages(nearbyIndexes(activeIndex, 1)).catch(() => {});

@@ -14,6 +14,8 @@ Admin accounts are blocked from cart policies and from the `place_order` databas
 
 The app uses only Supabase Free-plan primitives: email/password Auth, Postgres, RLS, REST/RPC, and private Storage. It does not depend on a paid Supabase add-on or paid external API.
 
+For an existing installation, run [`supabase/public-artwork-access-and-availability.sql`](supabase/public-artwork-access-and-availability.sql) once in the Supabase SQL editor. It adds the restricted public artwork-preview RPC and storage policy, reinforces authenticated Thought interactions, and keeps the final availability check inside the order transaction. It does not expose full artwork stories or private Highlight media.
+
 ## Required Auth settings
 
 - Set the production website URL under **Authentication → URL Configuration**.

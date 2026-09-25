@@ -12,6 +12,7 @@
 .comment-form textarea { background: var(--surface); }
 .comment-form .button { justify-self: end; }
 .comment-form > p { margin: 0; }.comment-form > p a { color: var(--accent); text-decoration: underline; }
+.comment-form > p button.text-link { display: inline; padding: 0; border: 0; background: transparent; text-decoration: underline; cursor: pointer; }
 .comment-list { margin-top: 35px; }
 .comment-item { padding: 25px 0; border-top: 1px solid var(--line); }
 .comment-item > div { display: flex; justify-content: space-between; gap: 20px; }

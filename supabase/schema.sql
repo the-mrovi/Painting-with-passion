@@ -478,6 +478,71 @@ $$;
 revoke all on function public.get_like_summary(text, uuid) from public;
 grant execute on function public.get_like_summary(text, uuid) to anon, authenticated;
 
+-- Public visitors can discover published artwork without gaining direct access to
+-- the paintings table (and therefore without being able to fetch full stories).
+create or replace function public.get_public_paintings(p_painting_id uuid default null)
+returns table (
+  id uuid,
+  title text,
+  storage_path text,
+  story_preview text,
+  has_more_story boolean,
+  medium text,
+  dimensions text,
+  price numeric,
+  currency text,
+  is_available boolean,
+  created_at timestamptz
+)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  with visible as (
+    select
+      p.*,
+      coalesce(nullif(trim(p.description), ''), nullif(trim(p.caption), ''), 'No story has been added for this work yet.') as story_text
+    from public.paintings p
+    where p.published = true
+      and (p_painting_id is null or p.id = p_painting_id)
+  )
+  select
+    v.id,
+    v.title,
+    v.storage_path,
+    array_to_string((regexp_split_to_array(v.story_text, '\s+'))[1:32], ' ') as story_preview,
+    cardinality(regexp_split_to_array(v.story_text, '\s+')) > 32 as has_more_story,
+    v.medium,
+    v.dimensions,
+    v.price,
+    v.currency,
+    v.is_available,
+    v.created_at
+  from visible v
+  order by v.created_at desc;
+$$;
+
+revoke all on function public.get_public_paintings(uuid) from public;
+grant execute on function public.get_public_paintings(uuid) to anon, authenticated;
+
+create or replace function public.is_published_artwork_path(p_path text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1
+    from public.paintings p
+    where p.storage_path = p_path and p.published = true
+  );
+$$;
+
+revoke all on function public.is_published_artwork_path(text) from public;
+grant execute on function public.is_published_artwork_path(text) to anon, authenticated;
+
 create or replace function public.set_user_ban(p_user_id uuid, p_banned boolean, p_reason text default null)
 returns void
 language plpgsql
@@ -525,6 +590,7 @@ declare
   new_order_number text := 'PWP-' || to_char(now(), 'YYMMDD') || '-' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 6));
   cart_count integer;
   available_count integer;
+  unavailable_titles text;
   order_subtotal numeric(12,2);
   order_currency text;
 begin
@@ -568,7 +634,13 @@ begin
     raise exception 'Your cart is empty';
   end if;
   if available_count <> cart_count then
-    raise exception 'One or more artworks are no longer available';
+    select string_agg(p.title, ', ' order by p.title)
+    into unavailable_titles
+    from public.cart_items c
+    join public.paintings p on p.id = c.painting_id
+    where c.user_id = current_user_id
+      and not (p.published = true and p.is_available = true and p.price is not null);
+    raise exception 'No longer available: %', coalesce(unavailable_titles, 'one or more artworks');
   end if;
   if exists (
     select 1
@@ -703,12 +775,20 @@ using (exists (select 1 from public.thoughts t where t.id = thought_id and t.pub
 create policy "comments_member_read" on public.comments for select to authenticated
 using (exists (select 1 from public.thoughts t where t.id = thought_id and t.published = true) or (select private.is_admin()));
 create policy "comments_member_insert" on public.comments for insert to authenticated
-with check ((select auth.uid()) = user_id and (select private.is_active_user()));
+with check (
+  (select auth.uid()) = user_id
+  and (select private.is_active_user())
+  and exists (select 1 from public.thoughts t where t.id = thought_id and t.published = true)
+);
 create policy "comments_owner_or_admin_delete" on public.comments for delete to authenticated
 using ((select auth.uid()) = user_id or (select private.is_admin()));
 
 create policy "thought_likes_public_read" on public.thought_likes for select to anon, authenticated using (true);
-create policy "thought_likes_member_insert" on public.thought_likes for insert to authenticated with check ((select auth.uid()) = user_id and (select private.is_active_user()));
+create policy "thought_likes_member_insert" on public.thought_likes for insert to authenticated with check (
+  (select auth.uid()) = user_id
+  and (select private.is_active_user())
+  and exists (select 1 from public.thoughts t where t.id = thought_id and t.published = true)
+);
 create policy "thought_likes_owner_delete" on public.thought_likes for delete to authenticated using ((select auth.uid()) = user_id);
 create policy "painting_likes_member_read" on public.painting_likes for select to authenticated using ((select private.is_active_user()));
 create policy "painting_likes_member_insert" on public.painting_likes for insert to authenticated with check ((select auth.uid()) = user_id and (select private.is_active_user()));
@@ -761,6 +841,8 @@ set public = excluded.public,
 
 create policy "protected_media_member_read" on storage.objects for select to authenticated
 using (bucket_id in ('artworks', 'highlights') and (select private.is_active_user()));
+create policy "published_artwork_public_read" on storage.objects for select to anon
+using (bucket_id = 'artworks' and (select public.is_published_artwork_path(name)));
 create policy "protected_media_admin_insert" on storage.objects for insert to authenticated
 with check (bucket_id in ('artworks', 'highlights') and (select private.is_admin()));
 create policy "protected_media_admin_update" on storage.objects for update to authenticated

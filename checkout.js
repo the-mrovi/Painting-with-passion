@@ -61,11 +61,44 @@
         }
     });
 
+    async function findUnavailableArtworkNames() {
+        const paintingIds = cart.map((item) => item.painting_id);
+        if (!paintingIds.length) return [];
+        const { data, error } = await sb
+            .from('paintings')
+            .select('id, title, published, is_available, price')
+            .in('id', paintingIds);
+        if (error) throw error;
+        const latestById = new Map((data || []).map((painting) => [painting.id, painting]));
+        return cart
+            .filter((item) => {
+                const latest = latestById.get(item.painting_id);
+                return !latest || !latest.published || !latest.is_available || latest.price === null;
+            })
+            .map((item) => latestById.get(item.painting_id)?.title || item.paintings.title);
+    }
+
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const button = form.querySelector('[type="submit"]');
         const data = new FormData(form);
         button.disabled = true;
+        button.textContent = 'Checking availability…';
+        try {
+            const unavailableNames = await findUnavailableArtworkNames();
+            if (unavailableNames.length) {
+                showToast(`No longer available: ${unavailableNames.join(', ')}`, 'error');
+                await loadCart();
+                button.disabled = false;
+                button.textContent = 'Place order';
+                return;
+            }
+        } catch {
+            showToast('Availability could not be checked. Please try again.', 'error');
+            button.disabled = false;
+            button.textContent = 'Place order';
+            return;
+        }
         button.textContent = 'Placing order…';
         const { data: result, error } = await sb.rpc('place_order', {
             p_full_name: String(data.get('full_name') || ''),
